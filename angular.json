@@ -37,11 +37,11 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist/tripboard",
             "index": "src/index.html",
-            "browser": "src/main.ts",
+            "main": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
@@ -57,12 +57,7 @@
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
-            ],
-            "server": "src/main.server.ts",
-            "prerender": true,
-            "ssr": {
-              "entry": "server.ts"
-            }
+            ]
           },
           "configurations": {
             "production": {
@@ -92,10 +87,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "tripboard:build:production"
+              "browserTarget": "tripboard:build:production"
             },
             "development": {
-              "buildTarget": "tripboard:build:development"
+              "browserTarget": "tripboard:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -103,7 +98,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "tripboard:build"
+            "browserTarget": "tripboard:build"
           }
         },
         "test": {
@@ -127,5 +122,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "66af531d-3fc6-4954-bb84-7a5ffc1a2197"
   }
 } 

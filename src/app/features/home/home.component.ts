@@ -125,7 +125,7 @@ import { RouterLink } from '@angular/router';
           </div>
           <div class="col-md-3">
             <h6>Contato</h6>
-            <p class="small">contato@tripboard.com</p>
+            <p class="small">contato&#64;tripboard.com</p>
           </div>
         </div>
         <hr>
