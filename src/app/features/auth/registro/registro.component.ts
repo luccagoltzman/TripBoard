@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -18,6 +18,15 @@ import { finalize } from 'rxjs';
               <div class="text-center mb-4">
                 <h2 class="mb-0">Crie sua conta</h2>
                 <p class="text-muted">Planeje viagens com amigos e família</p>
+              </div>
+              
+              <div *ngIf="success" class="alert alert-success mb-4" role="alert">
+                <div class="d-flex align-items-center">
+                  <i class="material-icons me-2">check_circle</i>
+                  <div>
+                    <strong>Conta criada com sucesso!</strong> Redirecionando para o dashboard...
+                  </div>
+                </div>
               </div>
               
               <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
@@ -88,7 +97,7 @@ import { finalize } from 'rxjs';
                   <button 
                     type="submit" 
                     class="btn btn-primary btn-lg" 
-                    [disabled]="loading"
+                    [disabled]="loading || success"
                   >
                     <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                     Criar conta
@@ -131,12 +140,17 @@ import { finalize } from 'rxjs';
       padding: 12px;
       font-weight: 500;
     }
+    
+    .material-icons {
+      font-size: 24px;
+    }
   `]
 })
-export class RegistroComponent {
+export class RegistroComponent implements OnInit {
   registroForm: FormGroup;
   loading = false;
   submitted = false;
+  success = false;
   error = '';
 
   constructor(
@@ -151,6 +165,15 @@ export class RegistroComponent {
       confirmarSenha: ['', Validators.required]
     }, {
       validators: this.mustMatch('senha', 'confirmarSenha')
+    });
+  }
+  
+  ngOnInit(): void {
+    // Verificar se o usuário já está autenticado
+    this.authService.isAutenticado$.subscribe(isAuth => {
+      if (isAuth) {
+        this.router.navigate(['/dashboard']);
+      }
     });
   }
 
@@ -193,13 +216,24 @@ export class RegistroComponent {
       )
       .subscribe({
         next: (response) => {
+          console.log('Registro response:', response);
+          
           if (response.success) {
-            this.router.navigate(['/dashboard']);
+            this.success = true;
+            
+            // Aguardar um momento antes de redirecionar para mostrar mensagem de sucesso
+            setTimeout(() => {
+              console.log('Redirecting to dashboard after registration');
+              
+              // Forçar um refresh para garantir que a página seja carregada com os dados do usuário
+              window.location.href = '/dashboard';
+            }, 1500);
           } else {
             this.error = response.message || 'Falha no registro';
           }
         },
         error: (error) => {
+          console.error('Registro error:', error);
           this.error = error?.error?.message || 'Erro ao tentar criar conta. Tente novamente.';
         }
       });

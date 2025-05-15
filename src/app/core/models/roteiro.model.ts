@@ -15,6 +15,7 @@ export interface Roteiro {
   colaboradores?: Colaborador[];
   atividades?: Atividade[];
   privado?: boolean;
+  orcamento_total?: number;
   
   // Propriedades para controle de UI
   editavel?: boolean;

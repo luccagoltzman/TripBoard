@@ -82,6 +82,25 @@
             </div>
 
             <div class="mb-4">
+              <label for="orcamento_total" class="form-label">Orçamento Total <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input 
+                  type="number" 
+                  id="orcamento_total" 
+                  formControlName="orcamento_total" 
+                  class="form-control" 
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                  [ngClass]="{'is-invalid': formSubmitted && f['orcamento_total'].errors}">
+              </div>
+              <div class="invalid-feedback" *ngIf="formSubmitted && f['orcamento_total'].errors?.['required']">
+                Orçamento total é obrigatório
+              </div>
+            </div>
+
+            <div class="mb-4">
               <label for="imagem" class="form-label">URL da Imagem de Capa (opcional)</label>
               <input 
                 type="url" 

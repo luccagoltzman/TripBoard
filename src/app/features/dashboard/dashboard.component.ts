@@ -156,8 +156,13 @@ export class DashboardComponent implements OnInit {
   
   carregarDadosUsuario(): void {
     this.authService.usuario$.subscribe(usuario => {
-      if (usuario) {
-        this.nomeUsuario = usuario.nome.split(' ')[0]; // Apenas o primeiro nome
+      if (usuario && usuario.nome) {
+        // Obter o primeiro nome
+        const nomePartes = usuario.nome.split(' ');
+        this.nomeUsuario = nomePartes.length > 0 ? nomePartes[0] : 'Usuário';
+      } else {
+        // Valor padrão se o nome do usuário não estiver disponível
+        this.nomeUsuario = 'Usuário';
       }
     });
   }
@@ -170,28 +175,51 @@ export class DashboardComponent implements OnInit {
       .pipe(finalize(() => this.loading = false))
       .subscribe({
         next: (response) => {
-          if (response.success && response.data.items) {
-            this.roteiros = response.data.items;
+          console.log('Resposta completa do serviço:', response);
+          
+          if (response.success && response.data) {
+            if (Array.isArray(response.data)) {
+              // Se a resposta já é um array
+              this.roteiros = response.data;
+            } else if (response.data.items && Array.isArray(response.data.items)) {
+              // Se a resposta tem a estrutura de paginação
+              this.roteiros = response.data.items;
+            } else {
+              console.error('Formato de dados inesperado:', response.data);
+              this.error = 'Erro ao processar dados dos roteiros';
+              this.roteiros = [];
+            }
+            console.log('Roteiros carregados:', this.roteiros);
           } else {
             this.error = response.message || 'Erro ao carregar roteiros';
+            this.roteiros = [];
           }
         },
         error: (error) => {
+          console.error('Erro ao carregar roteiros:', error);
           this.error = error?.error?.message || 'Não foi possível carregar seus roteiros. Tente novamente.';
+          this.roteiros = [];
         }
       });
   }
   
-  formatarData(data: Date): string {
+  formatarData(data: Date | string | undefined): string {
     if (!data) return '';
     const dataObj = new Date(data);
     return dataObj.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   }
   
   calcularDuracao(roteiro: Roteiro): number {
-    if (!roteiro.dataInicio || !roteiro.dataFim) return 0;
-    const inicio = new Date(roteiro.dataInicio);
-    const fim = new Date(roteiro.dataFim);
+    if (!roteiro) return 0;
+    
+    // Verificar ambos os formatos de data (frontend e backend)
+    const dataInicio = roteiro.dataInicio || (roteiro as any).data_inicio;
+    const dataFim = roteiro.dataFim || (roteiro as any).data_fim;
+    
+    if (!dataInicio || !dataFim) return 0;
+    
+    const inicio = new Date(dataInicio);
+    const fim = new Date(dataFim);
     const diffTempo = Math.abs(fim.getTime() - inicio.getTime());
     return Math.ceil(diffTempo / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir o dia final
   }

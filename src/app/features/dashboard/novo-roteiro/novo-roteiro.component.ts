@@ -43,7 +43,8 @@ export class NovoRoteiroComponent implements OnInit {
       dataFim: [this.formatarDataParaInput(amanha), [Validators.required]],
       descricao: [''],
       imagem: [''],
-      privado: [false]
+      privado: [false],
+      orcamento_total: [0, [Validators.required, Validators.min(0)]]
     }, { validators: this.validarDatas });
   }
   
@@ -85,15 +86,22 @@ export class NovoRoteiroComponent implements OnInit {
     
     this.salvando = true;
     
+    // Formatar as datas para o formato que o Laravel espera (YYYY-MM-DD)
+    const dataInicio = this.f['dataInicio'].value;
+    const dataFim = this.f['dataFim'].value;
+    
     const roteiro: Partial<Roteiro> = {
       nome: this.f['nome'].value,
       destino: this.f['destino'].value,
-      dataInicio: new Date(this.f['dataInicio'].value),
-      dataFim: new Date(this.f['dataFim'].value),
-      descricao: this.f['descricao'].value,
-      imagem: this.f['imagem'].value,
-      privado: this.f['privado'].value
+      dataInicio: dataInicio, // Formato YYYY-MM-DD
+      dataFim: dataFim, // Formato YYYY-MM-DD
+      descricao: this.f['descricao'].value || '',
+      imagem: this.f['imagem'].value || '',
+      privado: this.f['privado'].value,
+      orcamento_total: this.f['orcamento_total'].value
     };
+    
+    console.log('Enviando roteiro:', roteiro);
     
     this.roteiroService.criarRoteiro(roteiro)
       .pipe(finalize(() => this.salvando = false))
@@ -108,9 +116,16 @@ export class NovoRoteiroComponent implements OnInit {
           }
         },
         error: (error) => {
-          this.notificacaoService.exibirErro(
-            error?.error?.message || 'Não foi possível criar o roteiro. Tente novamente.'
-          );
+          console.error('Erro ao criar roteiro:', error);
+          if (error?.error?.errors) {
+            // Exibir erros de validação específicos
+            const errorMessages = Object.values(error.error.errors).flat();
+            errorMessages.forEach((msg: any) => this.notificacaoService.exibirErro(msg));
+          } else {
+            this.notificacaoService.exibirErro(
+              error?.error?.message || 'Não foi possível criar o roteiro. Tente novamente.'
+            );
+          }
         }
       });
   }

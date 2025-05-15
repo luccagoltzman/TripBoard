@@ -1,14 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '@app/core/services/auth.service';
 import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   template: `
     <div class="container">
       <div class="row justify-content-center">
@@ -18,6 +18,15 @@ import { finalize } from 'rxjs';
               <div class="text-center mb-4">
                 <h2 class="mb-0">TripBoard</h2>
                 <p class="text-muted">Entre na sua conta</p>
+              </div>
+              
+              <div *ngIf="success" class="alert alert-success mb-4" role="alert">
+                <div class="d-flex align-items-center">
+                  <i class="material-icons me-2">check_circle</i>
+                  <div>
+                    <strong>Login realizado com sucesso!</strong> Redirecionando...
+                  </div>
+                </div>
               </div>
               
               <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
@@ -59,7 +68,7 @@ import { finalize } from 'rxjs';
                   <button 
                     type="submit" 
                     class="btn btn-primary btn-lg" 
-                    [disabled]="loading"
+                    [disabled]="loading || success"
                   >
                     <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                     Entrar
@@ -102,12 +111,17 @@ import { finalize } from 'rxjs';
       padding: 12px;
       font-weight: 500;
     }
+    
+    .material-icons {
+      font-size: 24px;
+    }
   `]
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   loading = false;
   submitted = false;
+  success = false;
   error = '';
   returnUrl: string = '/dashboard';
 
@@ -121,9 +135,18 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       senha: ['', Validators.required]
     });
-
+  }
+  
+  ngOnInit(): void {
     // Obter URL de retorno dos parâmetros da rota ou usar padrão
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+    
+    // Verificar se o usuário já está autenticado
+    this.authService.isAutenticado$.subscribe(isAuth => {
+      if (isAuth) {
+        this.router.navigate([this.returnUrl]);
+      }
+    });
   }
 
   // Getter para acesso fácil aos campos do formulário
@@ -147,13 +170,24 @@ export class LoginComponent {
       )
       .subscribe({
         next: (response) => {
+          console.log('Login response:', response);
+          
           if (response.success) {
-            this.router.navigate([this.returnUrl]);
+            this.success = true;
+            
+            // Aguardar um momento antes de redirecionar para mostrar mensagem de sucesso
+            setTimeout(() => {
+              console.log('Redirecting to:', this.returnUrl);
+              
+              // Forçar um refresh para garantir que a página seja carregada com os dados do usuário
+              window.location.href = this.returnUrl;
+            }, 1500);
           } else {
             this.error = response.message || 'Falha no login';
           }
         },
         error: (error) => {
+          console.error('Login error:', error);
           this.error = error?.error?.message || 'Erro ao tentar fazer login. Tente novamente.';
         }
       });
