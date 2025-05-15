@@ -1,0 +1,54 @@
+.card {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card-header {
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  
+  h5 {
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+}
+
+.list-group-item {
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+  }
+}
+
+h1 {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.btn-link {
+  color: var(--primary-color);
+  
+  &:hover {
+    color: var(--primary-color-dark);
+  }
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  
+  &:hover, &:focus {
+    background-color: var(--primary-color-dark);
+    border-color: var(--primary-color-dark);
+  }
+}
+
+.form-check-input:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.badge {
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+} 

@@ -28,12 +28,12 @@ import { finalize } from 'rxjs';
                     class="form-control" 
                     id="email" 
                     formControlName="email" 
-                    [ngClass]="{'is-invalid': submitted && f.email.errors}" 
+                    [ngClass]="{'is-invalid': submitted && f['email'].errors}" 
                     placeholder="seu@email.com"
                   >
-                  <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-                    <div *ngIf="f.email.errors.required">Email é obrigatório</div>
-                    <div *ngIf="f.email.errors.email">Email inválido</div>
+                  <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                    <div *ngIf="f['email'].errors['required']">Email é obrigatório</div>
+                    <div *ngIf="f['email'].errors['email']">Email inválido</div>
                   </div>
                 </div>
                 
@@ -47,11 +47,11 @@ import { finalize } from 'rxjs';
                     class="form-control" 
                     id="password" 
                     formControlName="senha" 
-                    [ngClass]="{'is-invalid': submitted && f.senha.errors}" 
+                    [ngClass]="{'is-invalid': submitted && f['senha'].errors}" 
                     placeholder="••••••••"
                   >
-                  <div *ngIf="submitted && f.senha.errors" class="invalid-feedback">
-                    <div *ngIf="f.senha.errors.required">Senha é obrigatória</div>
+                  <div *ngIf="submitted && f['senha'].errors" class="invalid-feedback">
+                    <div *ngIf="f['senha'].errors['required']">Senha é obrigatória</div>
                   </div>
                 </div>
                 

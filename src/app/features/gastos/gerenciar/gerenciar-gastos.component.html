@@ -1,0 +1,200 @@
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div *ngIf="carregando" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="mt-2">Carregando informações...</p>
+      </div>
+
+      <div *ngIf="!carregando && roteiro">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="d-flex align-items-center">
+            <button class="btn btn-link text-decoration-none p-0 me-3" (click)="voltar()">
+              <i class="material-icons align-middle">arrow_back</i>
+            </button>
+            <h1 class="mb-0">Gerenciar Gastos</h1>
+          </div>
+          <span class="badge bg-primary p-2 fs-6">Total: {{ formatarValor(totalGastos) }}</span>
+        </div>
+
+        <div class="row">
+          <!-- Formulário de gasto -->
+          <div class="col-md-5">
+            <div class="card shadow-sm mb-4">
+              <div class="card-header bg-white py-3">
+                <h5 class="mb-0">{{ gastoEmEdicao ? 'Editar' : 'Adicionar' }} Gasto</h5>
+              </div>
+              <div class="card-body p-4">
+                <form [formGroup]="gastoForm" (ngSubmit)="salvarGasto()">
+                  <div class="mb-3">
+                    <label for="categoria" class="form-label">Categoria</label>
+                    <select
+                      id="categoria"
+                      formControlName="categoria"
+                      class="form-select"
+                      [ngClass]="{'is-invalid': formSubmitted && f['categoria'].errors}"
+                    >
+                      <option value="">Selecione uma categoria</option>
+                      <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="formSubmitted && f['categoria'].errors">
+                      <span *ngIf="f['categoria'].errors['required']">Categoria é obrigatória</span>
+                    </div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="descricao" class="form-label">Descrição</label>
+                    <input
+                      type="text"
+                      id="descricao"
+                      formControlName="descricao"
+                      class="form-control"
+                      [ngClass]="{'is-invalid': formSubmitted && f['descricao'].errors}"
+                      placeholder="Ex: Hospedagem no Hotel Exemplo"
+                    >
+                    <div class="invalid-feedback" *ngIf="formSubmitted && f['descricao'].errors">
+                      <span *ngIf="f['descricao'].errors['required']">Descrição é obrigatória</span>
+                    </div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="valor" class="form-label">Valor (R$)</label>
+                    <input
+                      type="number"
+                      id="valor"
+                      formControlName="valor"
+                      class="form-control"
+                      [ngClass]="{'is-invalid': formSubmitted && f['valor'].errors}"
+                      placeholder="0.00"
+                      step="0.01"
+                      min="0.01"
+                    >
+                    <div class="invalid-feedback" *ngIf="formSubmitted && f['valor'].errors">
+                      <span *ngIf="f['valor'].errors['required']">Valor é obrigatório</span>
+                      <span *ngIf="f['valor'].errors['min']">Valor deve ser maior que zero</span>
+                    </div>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label for="dataPrevista" class="form-label">Data Prevista</label>
+                    <input
+                      type="date"
+                      id="dataPrevista"
+                      formControlName="dataPrevista"
+                      class="form-control"
+                    >
+                  </div>
+                  
+                  <div class="d-grid gap-2">
+                    <button
+                      type="submit"
+                      class="btn btn-primary"
+                      [disabled]="salvandoGasto"
+                    >
+                      <span *ngIf="salvandoGasto" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                      {{ gastoEmEdicao ? 'Atualizar' : 'Adicionar' }} Gasto
+                    </button>
+                    
+                    <button
+                      *ngIf="gastoEmEdicao"
+                      type="button"
+                      class="btn btn-outline-secondary"
+                      (click)="cancelarEdicao()"
+                    >
+                      Cancelar Edição
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Lista de gastos -->
+          <div class="col-md-7">
+            <div class="card shadow-sm mb-4">
+              <div class="card-header bg-white py-3">
+                <h5 class="mb-0">Resumo de Gastos</h5>
+              </div>
+              <div class="card-body p-4">
+                <div *ngIf="gastos.length > 0">
+                  <div class="mb-4">
+                    <h6>Gastos por Categoria</h6>
+                    <div *ngFor="let cat of getGastosPorCategoria()" class="categoria-bar mb-2">
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span>{{ cat.categoria }}</span>
+                        <span class="text-muted small">{{ formatarValor(cat.total) }} ({{ cat.percentual.toFixed(1) }}%)</span>
+                      </div>
+                      <div class="progress" style="height: 10px;">
+                        <div 
+                          class="progress-bar" 
+                          [ngClass]="{'bg-primary': cat.categoria === 'Hospedagem',
+                                      'bg-success': cat.categoria === 'Alimentação',
+                                      'bg-info': cat.categoria === 'Transporte',
+                                      'bg-warning': cat.categoria === 'Passeios',
+                                      'bg-danger': cat.categoria === 'Compras',
+                                      'bg-secondary': !['Hospedagem', 'Alimentação', 'Transporte', 'Passeios', 'Compras'].includes(cat.categoria)}"
+                          [style.width.%]="cat.percentual"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card shadow-sm">
+              <div class="card-header bg-white py-3">
+                <h5 class="mb-0">Lista de Gastos</h5>
+              </div>
+              <div class="card-body p-0">
+                <div *ngIf="gastos.length === 0" class="p-4 text-center">
+                  <p class="text-muted mb-0">Nenhum gasto registrado. Adicione seu primeiro gasto!</p>
+                </div>
+                
+                <div *ngIf="gastos.length > 0" class="list-group list-group-flush">
+                  <div *ngFor="let gasto of gastos" class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-start">
+                      <div>
+                        <div class="d-flex align-items-center">
+                          <span class="categoria-badge me-2" 
+                                [ngClass]="{'badge-primary': gasto.categoria === 'Hospedagem',
+                                           'badge-success': gasto.categoria === 'Alimentação',
+                                           'badge-info': gasto.categoria === 'Transporte',
+                                           'badge-warning': gasto.categoria === 'Passeios',
+                                           'badge-danger': gasto.categoria === 'Compras',
+                                           'badge-secondary': !['Hospedagem', 'Alimentação', 'Transporte', 'Passeios', 'Compras'].includes(gasto.categoria)}">
+                            {{ gasto.categoria }}
+                          </span>
+                          <h6 class="mb-0">{{ gasto.descricao }}</h6>
+                        </div>
+                        <p class="mb-0 text-muted small">
+                          <i class="material-icons align-middle" style="font-size: 14px;">event</i>
+                          {{ formatarData(gasto.dataPrevista) }}
+                        </p>
+                      </div>
+                      <div class="text-end">
+                        <div class="d-flex align-items-center">
+                          <h6 class="mb-0 text-primary me-3">{{ formatarValor(gasto.valor) }}</h6>
+                          <div class="btn-group btn-group-sm">
+                            <button type="button" class="btn btn-outline-primary" (click)="editarGasto(gasto)">
+                              <i class="material-icons" style="font-size: 16px;">edit</i>
+                            </button>
+                            <button type="button" class="btn btn-outline-danger" (click)="removerGasto(gasto)">
+                              <i class="material-icons" style="font-size: 16px;">delete</i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

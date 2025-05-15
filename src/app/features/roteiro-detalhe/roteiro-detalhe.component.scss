@@ -1,0 +1,63 @@
+.roteiro-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar-brand {
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+.calendar-day {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 15px;
+  background-color: white;
+}
+
+.activity-item {
+  padding: 12px;
+  border-radius: 6px;
+  background-color: white;
+  border-left: 3px solid var(--primary-color);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  
+  &:hover {
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+  }
+}
+
+.activity-time {
+  min-width: 70px;
+}
+
+.material-icons {
+  vertical-align: middle;
+  font-size: 18px;
+}
+
+.badge .material-icons {
+  font-size: 12px;
+}
+
+.roteiro-header {
+  h1 {
+    color: var(--primary-color);
+  }
+}
+
+.card-header {
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.nav-pills .nav-link.active {
+  background-color: var(--primary-color);
+}
+
+.btn-outline-primary {
+  &:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+} 

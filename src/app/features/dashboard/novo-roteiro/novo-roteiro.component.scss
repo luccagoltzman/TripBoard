@@ -1,0 +1,26 @@
+.material-icons {
+  vertical-align: middle;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+.card {
+  border-radius: 8px;
+}
+
+.btn-primary {
+  padding: 10px 20px;
+}
+
+.btn-link {
+  color: var(--primary-color);
+  &:hover {
+    color: var(--primary-color-dark);
+  }
+} 

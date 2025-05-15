@@ -1,0 +1,59 @@
+.profile-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: 3px solid var(--primary-color);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.avatar-container {
+  position: relative;
+  display: inline-block;
+}
+
+.card {
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  
+  &:hover {
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  }
+}
+
+.card-header {
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  
+  h5 {
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  
+  &:hover, &:focus {
+    background-color: var(--primary-color-dark);
+    border-color: var(--primary-color-dark);
+  }
+}
+
+.btn-link {
+  color: var(--primary-color);
+  
+  &:hover {
+    color: var(--primary-color-dark);
+  }
+}
+
+.material-icons {
+  font-size: 18px;
+  vertical-align: middle;
+} 

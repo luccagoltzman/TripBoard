@@ -1,0 +1,130 @@
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div *ngIf="carregando" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+        <p class="mt-2">Carregando informações...</p>
+      </div>
+
+      <div *ngIf="!carregando && roteiro">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="d-flex align-items-center">
+            <button class="btn btn-link text-decoration-none p-0 me-3" (click)="voltar()">
+              <i class="material-icons align-middle">arrow_back</i>
+            </button>
+            <h1 class="mb-0">Gerenciar Colaboradores</h1>
+          </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Colaboradores do Roteiro: {{ roteiro.nome }}</h5>
+          </div>
+          <div class="card-body p-4">
+            <!-- Lista de colaboradores -->
+            <div *ngIf="colaboradores.length > 0">
+              <div class="list-group">
+                <!-- Proprietário -->
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center">
+                    <img [src]="roteiro.criador?.fotoPerfil || 'https://ui-avatars.com/api/?name=' + roteiro.criador?.nome + '&background=3f51b5&color=fff'" 
+                         class="rounded-circle me-3" 
+                         width="40" 
+                         alt="Avatar">
+                    <div>
+                      <h6 class="mb-0">{{ roteiro.criador?.nome || 'Usuário' }}</h6>
+                      <p class="mb-0 small text-muted">{{ roteiro.criador?.email }}</p>
+                    </div>
+                  </div>
+                  <span class="badge bg-primary rounded-pill">Proprietário</span>
+                </div>
+                
+                <!-- Colaboradores -->
+                <div *ngFor="let colaborador of colaboradores" class="list-group-item d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center">
+                    <img [src]="colaborador.usuario?.fotoPerfil || 'https://ui-avatars.com/api/?name=' + colaborador.usuario?.nome + '&background=3f51b5&color=fff'" 
+                         class="rounded-circle me-3" 
+                         width="40" 
+                         alt="Avatar">
+                    <div>
+                      <h6 class="mb-0">{{ colaborador.usuario?.nome || 'Usuário' }}</h6>
+                      <p class="mb-0 small text-muted">{{ colaborador.usuario?.email }}</p>
+                      <div class="mt-1">
+                        <span *ngIf="colaborador.podeEditar" class="badge bg-success me-1">Pode Editar</span>
+                        <span *ngIf="colaborador.podeGerenciarColaboradores" class="badge bg-info me-1">Pode Gerenciar Colaboradores</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="btn btn-outline-danger btn-sm" (click)="removerColaborador(colaborador)" [disabled]="removendoColaborador">
+                    <i class="material-icons align-middle" style="font-size: 16px;">delete</i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Mensagem quando não há colaboradores -->
+            <div *ngIf="colaboradores.length === 0" class="alert alert-info">
+              Este roteiro não possui colaboradores ainda. Convide pessoas para colaborar com seu roteiro.
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow-sm">
+          <div class="card-header bg-white py-3">
+            <h5 class="mb-0">Convidar Colaborador</h5>
+          </div>
+          <div class="card-body p-4">
+            <form [formGroup]="conviteForm" (ngSubmit)="convidarColaborador()">
+              <div class="mb-3">
+                <label for="email" class="form-label">Email do Colaborador</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  formControlName="email" 
+                  class="form-control" 
+                  [ngClass]="{'is-invalid': formSubmitted && f['email'].errors}"
+                  placeholder="email@exemplo.com"
+                >
+                <div class="invalid-feedback" *ngIf="formSubmitted && f['email'].errors">
+                  <span *ngIf="f['email'].errors['required']">Email é obrigatório</span>
+                  <span *ngIf="f['email'].errors['email']">Email inválido</span>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Permissões</label>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" id="podeEditar" formControlName="podeEditar">
+                  <label class="form-check-label" for="podeEditar">
+                    Pode editar o roteiro
+                  </label>
+                  <div class="form-text">Permite adicionar, editar e remover atividades</div>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="podeGerenciarColaboradores" formControlName="podeGerenciarColaboradores">
+                  <label class="form-check-label" for="podeGerenciarColaboradores">
+                    Pode gerenciar colaboradores
+                  </label>
+                  <div class="form-text">Permite convidar e remover outros colaboradores</div>
+                </div>
+              </div>
+              
+              <div class="d-grid">
+                <button 
+                  type="submit" 
+                  class="btn btn-primary" 
+                  [disabled]="enviandoConvite"
+                >
+                  <span *ngIf="enviandoConvite" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                  Enviar Convite
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

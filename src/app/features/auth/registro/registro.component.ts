@@ -28,11 +28,11 @@ import { finalize } from 'rxjs';
                     class="form-control" 
                     id="nome" 
                     formControlName="nome" 
-                    [ngClass]="{'is-invalid': submitted && f.nome.errors}" 
+                    [ngClass]="{'is-invalid': submitted && f['nome'].errors}" 
                     placeholder="Seu nome completo"
                   >
-                  <div *ngIf="submitted && f.nome.errors" class="invalid-feedback">
-                    <div *ngIf="f.nome.errors.required">Nome é obrigatório</div>
+                  <div *ngIf="submitted && f['nome'].errors" class="invalid-feedback">
+                    <div *ngIf="f['nome'].errors['required']">Nome é obrigatório</div>
                   </div>
                 </div>
                 
@@ -43,12 +43,12 @@ import { finalize } from 'rxjs';
                     class="form-control" 
                     id="email" 
                     formControlName="email" 
-                    [ngClass]="{'is-invalid': submitted && f.email.errors}" 
+                    [ngClass]="{'is-invalid': submitted && f['email'].errors}" 
                     placeholder="seu@email.com"
                   >
-                  <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-                    <div *ngIf="f.email.errors.required">Email é obrigatório</div>
-                    <div *ngIf="f.email.errors.email">Email inválido</div>
+                  <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                    <div *ngIf="f['email'].errors['required']">Email é obrigatório</div>
+                    <div *ngIf="f['email'].errors['email']">Email inválido</div>
                   </div>
                 </div>
                 
@@ -59,12 +59,12 @@ import { finalize } from 'rxjs';
                     class="form-control" 
                     id="senha" 
                     formControlName="senha" 
-                    [ngClass]="{'is-invalid': submitted && f.senha.errors}" 
+                    [ngClass]="{'is-invalid': submitted && f['senha'].errors}" 
                     placeholder="Crie uma senha forte"
                   >
-                  <div *ngIf="submitted && f.senha.errors" class="invalid-feedback">
-                    <div *ngIf="f.senha.errors.required">Senha é obrigatória</div>
-                    <div *ngIf="f.senha.errors.minlength">Senha deve ter pelo menos 6 caracteres</div>
+                  <div *ngIf="submitted && f['senha'].errors" class="invalid-feedback">
+                    <div *ngIf="f['senha'].errors['required']">Senha é obrigatória</div>
+                    <div *ngIf="f['senha'].errors['minlength']">Senha deve ter pelo menos 6 caracteres</div>
                   </div>
                 </div>
                 
@@ -75,12 +75,12 @@ import { finalize } from 'rxjs';
                     class="form-control" 
                     id="confirmarSenha" 
                     formControlName="confirmarSenha" 
-                    [ngClass]="{'is-invalid': submitted && f.confirmarSenha.errors}" 
+                    [ngClass]="{'is-invalid': submitted && f['confirmarSenha'].errors}" 
                     placeholder="Confirme sua senha"
                   >
-                  <div *ngIf="submitted && f.confirmarSenha.errors" class="invalid-feedback">
-                    <div *ngIf="f.confirmarSenha.errors.required">Confirmação de senha é obrigatória</div>
-                    <div *ngIf="f.confirmarSenha.errors.mustMatch">As senhas não conferem</div>
+                  <div *ngIf="submitted && f['confirmarSenha'].errors" class="invalid-feedback">
+                    <div *ngIf="f['confirmarSenha'].errors['required']">Confirmação de senha é obrigatória</div>
+                    <div *ngIf="f['confirmarSenha'].errors['mustMatch']">As senhas não conferem</div>
                   </div>
                 </div>
                 
@@ -163,7 +163,7 @@ export class RegistroComponent {
       const control = formGroup.controls[controlName];
       const matchingControl = formGroup.controls[matchingControlName];
 
-      if (matchingControl.errors && !matchingControl.errors.mustMatch) {
+      if (matchingControl.errors && !matchingControl.errors['mustMatch']) {
         return;
       }
 

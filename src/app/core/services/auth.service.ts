@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, map, tap } from 'rxjs';
 import { environment } from '@env/environment';
 import { ApiResponse } from '../models/api-response.model';
-import { Usuario, UsuarioLogin, UsuarioRegistro, UsuarioResponse } from '../models/usuario.model';
+import { Usuario, UsuarioLogin, UsuarioRegistro, UsuarioResponse, AlterarSenha } from '../models/usuario.model';
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +60,20 @@ export class AuthService {
         }
       })
     );
+  }
+
+  atualizarPerfil(dadosUsuario: Partial<Usuario>): Observable<ApiResponse<Usuario>> {
+    return this.http.put<ApiResponse<Usuario>>(`${this.apiUrl}/perfil`, dadosUsuario).pipe(
+      tap(response => {
+        if (response.success && response.data) {
+          this.atualizarUsuario(response.data);
+        }
+      })
+    );
+  }
+
+  alterarSenha(dados: AlterarSenha): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/alterar-senha`, dados);
   }
 
   atualizarUsuario(novosDados: Usuario): void {

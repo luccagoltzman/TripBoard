@@ -37,12 +37,12 @@ import { finalize } from 'rxjs';
                     class="form-control" 
                     id="email" 
                     formControlName="email" 
-                    [ngClass]="{'is-invalid': submitted && f.email.errors}" 
+                    [ngClass]="{'is-invalid': submitted && f['email'].errors}" 
                     placeholder="seu@email.com"
                   >
-                  <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-                    <div *ngIf="f.email.errors.required">Email é obrigatório</div>
-                    <div *ngIf="f.email.errors.email">Email inválido</div>
+                  <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                    <div *ngIf="f['email'].errors['required']">Email é obrigatório</div>
+                    <div *ngIf="f['email'].errors['email']">Email inválido</div>
                   </div>
                 </div>
                 

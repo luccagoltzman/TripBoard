@@ -1,18 +1,24 @@
 import { Usuario } from './usuario.model';
+import { Atividade } from './atividade.model';
+import { Colaborador } from './colaborador.model';
 
 export interface Roteiro {
-  id: number;
+  id: number | string;
   nome: string;
   destino: string;
   dataInicio: Date;
   dataFim: Date;
-  criadorId: number;
-  criador?: Usuario;
-  colaboradores?: Usuario[];
   descricao?: string;
   imagem?: string;
-  dataCriacao?: Date;
-  dataAtualizacao?: Date;
+  criadorId: number | string;
+  criador?: Usuario;
+  colaboradores?: Colaborador[];
+  atividades?: Atividade[];
+  privado?: boolean;
+  
+  // Propriedades para controle de UI
+  editavel?: boolean;
+  compartilhavel?: boolean;
 }
 
 export interface DiaRoteiro {
@@ -21,21 +27,6 @@ export interface DiaRoteiro {
   roteiroId: number;
   atividades: Atividade[];
   notasDia?: string;
-}
-
-export interface Atividade {
-  id: number;
-  titulo: string;
-  descricao: string;
-  local: string;
-  horario: string;
-  sugestao: boolean;
-  criadoPor: number;
-  criador?: Usuario;
-  diaDaViagemId: number;
-  importante?: boolean;
-  dataCriacao?: Date;
-  dataAtualizacao?: Date;
 }
 
 export interface Comentario {
