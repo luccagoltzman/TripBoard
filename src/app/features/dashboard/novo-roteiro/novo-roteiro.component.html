@@ -1,26 +1,38 @@
-<div class="container my-5">
-  <div class="row">
-    <div class="col-lg-8 mx-auto">
-      <div class="card shadow-sm">
-        <div class="card-body p-4">
-          <div class="d-flex align-items-center mb-4">
-            <button class="btn btn-link text-decoration-none p-0 me-3" (click)="voltar()">
-              <i class="material-icons align-middle">arrow_back</i>
-            </button>
-            <h2 class="mb-0">Criar Novo Roteiro</h2>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="glass-container p-4">
+        <!-- Cabeçalho -->
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <button class="btn btn-icon" (click)="voltar()">
+            <i class="material-icons">arrow_back</i>
+          </button>
+          <div>
+            <h1 class="h3 mb-1">Criar Novo Roteiro</h1>
+            <p class="text-muted mb-0">Preencha os detalhes do seu roteiro de viagem</p>
           </div>
+        </div>
 
-          <form [formGroup]="roteiroForm" (ngSubmit)="criarRoteiro()">
-            <!-- Detalhes principais -->
+        <!-- Formulário -->
+        <form [formGroup]="roteiroForm" (ngSubmit)="criarRoteiro()" class="needs-validation">
+          <!-- Seção: Informações Básicas -->
+          <div class="form-section mb-4">
+            <h5 class="section-title">Informações Básicas</h5>
+            
             <div class="mb-4">
               <label for="nome" class="form-label">Nome do Roteiro <span class="text-danger">*</span></label>
-              <input 
-                type="text" 
-                id="nome" 
-                formControlName="nome" 
-                class="form-control form-control-lg" 
-                placeholder="Ex: Férias na Praia"
-                [ngClass]="{'is-invalid': formSubmitted && f['nome'].errors}">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="material-icons">edit</i>
+                </span>
+                <input 
+                  type="text" 
+                  id="nome" 
+                  formControlName="nome" 
+                  class="form-control form-control-lg" 
+                  placeholder="Ex: Férias na Praia"
+                  [ngClass]="{'is-invalid': formSubmitted && f['nome'].errors}">
+              </div>
               <div class="invalid-feedback" *ngIf="formSubmitted && f['nome'].errors?.['required']">
                 Nome do roteiro é obrigatório
               </div>
@@ -28,57 +40,91 @@
 
             <div class="mb-4">
               <label for="destino" class="form-label">Destino Principal <span class="text-danger">*</span></label>
-              <input 
-                type="text" 
-                id="destino" 
-                formControlName="destino" 
-                class="form-control" 
-                placeholder="Ex: Rio de Janeiro, Brasil"
-                [ngClass]="{'is-invalid': formSubmitted && f['destino'].errors}">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="material-icons">place</i>
+                </span>
+                <input 
+                  type="text" 
+                  id="destino" 
+                  formControlName="destino" 
+                  class="form-control" 
+                  placeholder="Ex: Rio de Janeiro, Brasil"
+                  [ngClass]="{'is-invalid': formSubmitted && f['destino'].errors}">
+              </div>
               <div class="invalid-feedback" *ngIf="formSubmitted && f['destino'].errors?.['required']">
                 Destino é obrigatório
               </div>
             </div>
+          </div>
 
-            <div class="row mb-4">
+          <!-- Seção: Período -->
+          <div class="form-section mb-4">
+            <h5 class="section-title">Período da Viagem</h5>
+            
+            <div class="row g-3">
               <div class="col-md-6">
                 <label for="dataInicio" class="form-label">Data de Início <span class="text-danger">*</span></label>
-                <input 
-                  type="date" 
-                  id="dataInicio" 
-                  formControlName="dataInicio" 
-                  class="form-control"
-                  [ngClass]="{'is-invalid': formSubmitted && f['dataInicio'].errors}">
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="material-icons">event</i>
+                  </span>
+                  <input 
+                    type="date" 
+                    id="dataInicio" 
+                    formControlName="dataInicio" 
+                    class="form-control"
+                    [ngClass]="{'is-invalid': formSubmitted && f['dataInicio'].errors}">
+                </div>
                 <div class="invalid-feedback" *ngIf="formSubmitted && f['dataInicio'].errors?.['required']">
                   Data de início é obrigatória
                 </div>
               </div>
+              
               <div class="col-md-6">
                 <label for="dataFim" class="form-label">Data de Término <span class="text-danger">*</span></label>
-                <input 
-                  type="date" 
-                  id="dataFim" 
-                  formControlName="dataFim" 
-                  class="form-control"
-                  [ngClass]="{'is-invalid': formSubmitted && (f['dataFim'].errors)}">
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="material-icons">event</i>
+                  </span>
+                  <input 
+                    type="date" 
+                    id="dataFim" 
+                    formControlName="dataFim" 
+                    class="form-control"
+                    [ngClass]="{'is-invalid': formSubmitted && (f['dataFim'].errors)}">
+                </div>
                 <div class="invalid-feedback" *ngIf="formSubmitted && f['dataFim'].errors?.['required']">
                   Data de término é obrigatória
                 </div>
               </div>
-              <div class="col-12 mt-1 text-danger" *ngIf="formSubmitted && roteiroForm.errors?.['dataInvalida']">
-                A data de término deve ser igual ou posterior à data de início
+              
+              <div class="col-12">
+                <div class="text-danger small" *ngIf="formSubmitted && roteiroForm.errors?.['dataInvalida']">
+                  A data de término deve ser igual ou posterior à data de início
+                </div>
               </div>
             </div>
+          </div>
 
+          <!-- Seção: Detalhes Adicionais -->
+          <div class="form-section mb-4">
+            <h5 class="section-title">Detalhes Adicionais</h5>
+            
             <div class="mb-4">
               <label for="descricao" class="form-label">Descrição</label>
-              <textarea 
-                id="descricao" 
-                formControlName="descricao" 
-                class="form-control" 
-                rows="3"
-                placeholder="Descreva os objetivos, detalhes ou informações importantes sobre esta viagem">
-              </textarea>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="material-icons">description</i>
+                </span>
+                <textarea 
+                  id="descricao" 
+                  formControlName="descricao" 
+                  class="form-control" 
+                  rows="3"
+                  placeholder="Descreva os objetivos, detalhes ou informações importantes sobre esta viagem">
+                </textarea>
+              </div>
             </div>
 
             <div class="mb-4">
@@ -101,37 +147,44 @@
             </div>
 
             <div class="mb-4">
-              <label for="imagem" class="form-label">URL da Imagem de Capa (opcional)</label>
-              <input 
-                type="url" 
-                id="imagem" 
-                formControlName="imagem" 
-                class="form-control" 
-                placeholder="https://exemplo.com/imagem.jpg">
+              <label for="imagem" class="form-label">URL da Imagem de Capa</label>
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="material-icons">image</i>
+                </span>
+                <input 
+                  type="url" 
+                  id="imagem" 
+                  formControlName="imagem" 
+                  class="form-control" 
+                  placeholder="https://exemplo.com/imagem.jpg">
+              </div>
               <div class="form-text">Adicione uma URL de imagem que represente o destino</div>
             </div>
 
-            <div class="form-check mb-4">
+            <div class="form-check form-switch">
               <input class="form-check-input" type="checkbox" id="privado" formControlName="privado">
               <label class="form-check-label" for="privado">
                 Roteiro Privado
               </label>
               <div class="form-text">Se marcado, o roteiro será visível apenas para quem você convidar</div>
             </div>
+          </div>
 
-            <div class="d-grid gap-2 mt-5">
-              <button 
-                type="submit" 
-                class="btn btn-primary btn-lg" 
-                [disabled]="salvando">
-                <span *ngIf="salvando" class="spinner-border spinner-border-sm me-2" role="status"></span>
-                <span *ngIf="salvando">Criando roteiro...</span>
-                <span *ngIf="!salvando">Criar Roteiro</span>
-              </button>
-              <button type="button" class="btn btn-outline-secondary" (click)="voltar()">Cancelar</button>
-            </div>
-          </form>
-        </div>
+          <!-- Botões de ação -->
+          <div class="d-flex gap-2 justify-content-end">
+            <button type="button" class="btn btn-light btn-lg" (click)="voltar()">
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="btn btn-primary btn-lg"
+              [disabled]="loading">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+              Criar Roteiro
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

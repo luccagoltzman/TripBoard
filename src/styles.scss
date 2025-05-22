@@ -5,23 +5,42 @@
 
 /* Variáveis de cores */
 :root {
-  --primary-color: #3f51b5;
-  --primary-color-rgb: 63, 81, 181;
-  --primary-color-dark: #303f9f;  /* Versão escura pré-definida */
-  --secondary-color: #ff4081;
-  --secondary-color-rgb: 255, 64, 129;
-  --secondary-color-dark: #c60055; /* Versão escura pré-definida */
-  --accent-color: #ffeb3b;
-  --success-color: #4caf50;
-  --warning-color: #ff9800;
-  --danger-color: #f44336;
-  --light-color: #f5f5f5;
-  --dark-color: #212121;
-  --text-color: #333333;
-  --text-light: #757575;
-  --border-color: #e0e0e0;
-  --bg-light: #f9f9f9;
-  --shadow-color: rgba(0, 0, 0, 0.1);
+  /* Nova paleta de cores moderna */
+  --primary-color: #6366f1;
+  --primary-color-rgb: 99, 102, 241;
+  --primary-color-dark: #4f46e5;
+  --secondary-color: #ec4899;
+  --secondary-color-rgb: 236, 72, 153;
+  --secondary-color-dark: #db2777;
+  --accent-color: #8b5cf6;
+  --success-color: #22c55e;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --light-color: #f8fafc;
+  --dark-color: #0f172a;
+  --text-color: #334155;
+  --text-light: #64748b;
+  --bg-light: #f1f5f9;
+  --shadow-color: rgba(15, 23, 42, 0.1);
+
+  /* Aliases para manter compatibilidade */
+  --primary: var(--primary-color);
+  --primary-light: var(--accent-color);
+  --primary-dark: var(--primary-color-dark);
+  --primary-rgb: var(--primary-color-rgb);
+  --background: var(--light-color);
+  --surface: #ffffff;
+  --text-primary: var(--text-color);
+  --text-secondary: var(--text-light);
+  --border-color: var(--bg-light);
+  --success: var(--success-color);
+  --warning: var(--warning-color);
+  --error: var(--danger-color);
+  
+  /* Gradientes */
+  --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--secondary-color) 0%, var(--accent-color) 100%);
+  --gradient-surface: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%);
 }
 
 /* Reset e estilos base */
@@ -33,65 +52,112 @@
 
 html, body {
   height: 100%;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 16px;
-  color: var(--text-color);
-  background-color: var(--bg-light);
+  color: var(--text-primary);
+  background-color: var(--background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Tipografia */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   margin-bottom: 1rem;
-  color: var(--primary-color);
+  color: var(--text-primary);
+  line-height: 1.2;
 }
 
 a {
-  color: var(--primary-color);
+  color: var(--primary);
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   
   &:hover {
-    color: var(--primary-color-dark);
+    color: var(--primary-dark);
     text-decoration: none;
   }
 }
 
 /* Classes utilitárias */
 .card {
-  border-radius: 8px;
-  box-shadow: 0 4px 6px var(--shadow-color);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: var(--surface);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
   
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px var(--shadow-color);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  }
+
+  .card-header {
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.25rem;
+  }
+
+  .card-body {
+    padding: 1.25rem;
   }
 }
 
-.btn-primary {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
+/* Botões */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
   
-  &:hover, &:focus {
-    background-color: var(--primary-color-dark);
-    border-color: var(--primary-color-dark);
+  &-primary {
+    background: var(--gradient-primary);
+    color: white;
+    
+    &:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+  }
+  
+  &-outline {
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+    
+    &:hover {
+      background: var(--primary);
+      color: white;
+    }
   }
 }
 
-.btn-secondary {
-  background-color: var(--secondary-color);
-  border-color: var(--secondary-color);
+/* Forms */
+.form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.5rem;
+  transition: border-color 0.2s;
   
-  &:hover, &:focus {
-    background-color: var(--secondary-color-dark);
-    border-color: var(--secondary-color-dark);
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   }
+}
+
+.form-label {
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
 }
 
 /* Animações */
 .fade-in {
-  animation: fadeIn 0.5s ease;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 @keyframes fadeIn {
@@ -99,36 +165,204 @@ a {
   to { opacity: 1; }
 }
 
+/* Badges */
+.badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  
+  &-success {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--success);
+  }
+  
+  &-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+  }
+  
+  &-error {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--error);
+  }
+}
+
+/* Navbar com Glassmorphism */
+.navbar {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px -1px var(--shadow-color);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+
+  .navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    
+    &:hover {
+      color: var(--accent-color);
+    }
+  }
+
+  .nav-link {
+    color: var(--text-color);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    margin: 0 0.25rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: var(--primary-color);
+      background-color: rgba(var(--primary-color-rgb), 0.1);
+      transform: translateY(-1px);
+    }
+
+    &.active {
+      color: var(--primary-color);
+      background-color: rgba(var(--primary-color-rgb), 0.15);
+    }
+  }
+
+  .navbar-toggler {
+    border: none;
+    padding: 0.5rem;
+    
+    &:focus {
+      box-shadow: none;
+      outline: 2px solid var(--accent-color);
+      outline-offset: 2px;
+    }
+  }
+
+  .dropdown-menu {
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px -1px var(--shadow-color);
+    border-radius: 0.5rem;
+    
+    .dropdown-item {
+      color: var(--text-color);
+      padding: 0.75rem 1rem;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: rgba(var(--primary-color-rgb), 0.1);
+        color: var(--primary-color);
+      }
+      
+      &.active {
+        background: var(--gradient-primary);
+        color: white;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    background: rgba(255, 255, 255, 0.95);
+    
+    .navbar-collapse {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-top: 0.5rem;
+      box-shadow: 0 4px 6px -1px var(--shadow-color);
+    }
+    
+    .nav-link {
+      margin: 0.25rem 0;
+    }
+  }
+}
+
+/* Listas */
+.list-group-item {
+  border: none;
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: var(--bg-light);
+    transform: translateX(5px);
+  }
+}
+
+/* Ícones */
+.material-icons {
+  vertical-align: middle;
+  font-size: 1.25rem;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
   html {
     font-size: 14px;
   }
+  
+  .card {
+    border-radius: 12px;
+  }
+  
+  .btn {
+    padding: 0.625rem 1.25rem;
+  }
 }
 
-/* Ajustes para Material Icons */
-.material-icons {
-  vertical-align: middle;
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-/* Personalização de form controls */
-.form-control:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(63, 81, 181, 0.25);
+::-webkit-scrollbar-track {
+  background: var(--bg-light);
 }
 
-/* Badges personalizados */
-.badge {
-  font-weight: 500;
-  padding: 0.35em 0.65em;
-  border-radius: 15px;
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+  
+  &:hover {
+    background: var(--primary-dark);
+  }
 }
 
-.badge-primary { background-color: var(--primary-color); }
-.badge-secondary { background-color: var(--secondary-color); }
-.badge-success { background-color: var(--success-color); }
-.badge-warning { background-color: var(--warning-color); }
-.badge-danger { background-color: var(--danger-color); }
+/* Utilitários de espaçamento */
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 1rem; }
+.gap-4 { gap: 1.5rem; }
+.gap-5 { gap: 3rem; }
+
+/* Sombras */
+.shadow-sm {
+  box-shadow: 0 2px 4px var(--shadow-color) !important;
+}
+
+.shadow {
+  box-shadow: 0 4px 6px var(--shadow-color) !important;
+}
+
+.shadow-lg {
+  box-shadow: 0 8px 15px var(--shadow-color) !important;
+}
+
+/* Containers com fundo de vidro */
+.glass-container {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+}
 
 /* Estilos para o calendário de roteiro */
 .calendar-day {
@@ -140,11 +374,11 @@ a {
   transition: all 0.3s ease;
   
   &:hover {
-    border-color: var(--primary-color);
+    border-color: var(--primary);
   }
   
   &.has-important-event {
-    border-left: 4px solid var(--warning-color);
+    border-left: 4px solid var(--warning);
   }
 }
 
@@ -154,7 +388,7 @@ a {
   margin-bottom: 10px;
   border-radius: 6px;
   background-color: white;
-  border-left: 3px solid var(--primary-color);
+  border-left: 3px solid var(--primary);
   transition: all 0.2s ease;
   
   &:hover {
@@ -181,4 +415,10 @@ a {
 .expense-chart-container {
   height: 300px;
   margin: 20px 0;
+}
+
+.glass-card {
+  background: var(--gradient-surface);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 } 

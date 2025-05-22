@@ -19,6 +19,8 @@ export class NovoRoteiroComponent implements OnInit {
   roteiroForm!: FormGroup;
   formSubmitted = false;
   salvando = false;
+  loading = false;
+  imagemPreview: string | null = null;
   
   constructor(
     private fb: FormBuilder,
@@ -44,7 +46,9 @@ export class NovoRoteiroComponent implements OnInit {
       descricao: [''],
       imagem: [''],
       privado: [false],
-      orcamento_total: [0, [Validators.required, Validators.min(0)]]
+      orcamento_total: [0, [Validators.required, Validators.min(0)]],
+      status: ['ativo'],
+      imagemCapa: ['']
     }, { validators: this.validarDatas });
   }
   
@@ -96,9 +100,10 @@ export class NovoRoteiroComponent implements OnInit {
       dataInicio: dataInicio, // Formato YYYY-MM-DD
       dataFim: dataFim, // Formato YYYY-MM-DD
       descricao: this.f['descricao'].value || '',
-      imagem: this.f['imagem'].value || '',
+      status: this.f['status'].value,
+      orcamento_total: this.f['orcamento_total'].value,
       privado: this.f['privado'].value,
-      orcamento_total: this.f['orcamento_total'].value
+      imagemCapa: this.f['imagemCapa'].value
     };
     
     console.log('Enviando roteiro:', roteiro);
@@ -132,5 +137,19 @@ export class NovoRoteiroComponent implements OnInit {
   
   voltar(): void {
     this.router.navigate(['/dashboard']);
+  }
+
+  onImageSelect(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagemPreview = reader.result as string;
+        this.roteiroForm.patchValue({
+          imagemCapa: reader.result
+        });
+      };
+      reader.readAsDataURL(file);
+    }
   }
 } 

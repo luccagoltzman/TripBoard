@@ -1,0 +1,151 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-body p-5">
+          <h1 class="h3 mb-4">Novo Roteiro</h1>
+          
+          <form [formGroup]="roteiroForm" (ngSubmit)="onSubmit()">
+            <!-- Informações Básicas -->
+            <div class="section mb-5">
+              <h5 class="section-title">Informações Básicas</h5>
+              
+              <div class="mb-4">
+                <label class="form-label">Título do Roteiro</label>
+                <div class="input-group">
+                  <span class="input-group-text border-0">
+                    <i class="bi bi-pencil"></i>
+                  </span>
+                  <input type="text" 
+                         class="form-control" 
+                         formControlName="titulo"
+                         placeholder="Ex: Viagem para Paris">
+                </div>
+              </div>
+              
+              <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                  <label class="form-label">Data de Início</label>
+                  <div class="input-group">
+                    <span class="input-group-text border-0">
+                      <i class="bi bi-calendar-event"></i>
+                    </span>
+                    <input type="date" 
+                           class="form-control"
+                           formControlName="dataInicio">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Data de Fim</label>
+                  <div class="input-group">
+                    <span class="input-group-text border-0">
+                      <i class="bi bi-calendar-event"></i>
+                    </span>
+                    <input type="date" 
+                           class="form-control"
+                           formControlName="dataFim">
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <label class="form-label">Destino</label>
+                <div class="input-group">
+                  <span class="input-group-text border-0">
+                    <i class="bi bi-geo-alt"></i>
+                  </span>
+                  <input type="text" 
+                         class="form-control"
+                         formControlName="destino"
+                         placeholder="Ex: Paris, França">
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <label class="form-label">Descrição</label>
+                <textarea class="form-control" 
+                          rows="4"
+                          formControlName="descricao"
+                          placeholder="Descreva os objetivos e detalhes do roteiro..."></textarea>
+              </div>
+            </div>
+            
+            <!-- Configurações -->
+            <div class="section mb-5">
+              <h5 class="section-title">Configurações</h5>
+              
+              <div class="mb-4">
+                <label class="form-label">Status</label>
+                <select class="form-select" formControlName="status">
+                  <option value="ativo">Ativo</option>
+                  <option value="pendente">Pendente</option>
+                  <option value="concluido">Concluído</option>
+                </select>
+              </div>
+              
+              <div class="mb-4">
+                <label class="form-label">Orçamento Estimado</label>
+                <div class="input-group">
+                  <span class="input-group-text border-0">R$</span>
+                  <input type="number" 
+                         class="form-control"
+                         formControlName="orcamento"
+                         placeholder="0,00">
+                </div>
+              </div>
+              
+              <div class="form-check form-switch">
+                <input class="form-check-input" 
+                       type="checkbox" 
+                       formControlName="privado"
+                       id="roteiro-privado">
+                <label class="form-check-label" for="roteiro-privado">
+                  Roteiro Privado
+                </label>
+              </div>
+            </div>
+            
+            <!-- Imagem de Capa -->
+            <div class="section mb-5">
+              <h5 class="section-title">Imagem de Capa</h5>
+              
+              <div class="upload-area" 
+                   (click)="fileInput.click()"
+                   [class.has-image]="imagemPreview">
+                <input type="file" 
+                       #fileInput 
+                       hidden 
+                       accept="image/*"
+                       (change)="onImageSelect($event)">
+                
+                <ng-container *ngIf="!imagemPreview">
+                  <i class="bi bi-cloud-upload display-4"></i>
+                  <p class="mb-0">Clique para fazer upload ou arraste uma imagem</p>
+                  <small class="text-secondary">PNG, JPG ou GIF até 5MB</small>
+                </ng-container>
+                
+                <img *ngIf="imagemPreview" 
+                     [src]="imagemPreview" 
+                     class="preview-image">
+              </div>
+            </div>
+            
+            <!-- Botões -->
+            <div class="d-flex gap-3">
+              <button type="button" 
+                      class="btn btn-outline"
+                      (click)="onCancel()">
+                Cancelar
+              </button>
+              <button type="submit" 
+                      class="btn btn-primary"
+                      [disabled]="!roteiroForm.valid">
+                Criar Roteiro
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

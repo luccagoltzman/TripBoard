@@ -1,25 +1,29 @@
 <div class="roteiro-container">
-  <!-- Barra de navegação -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <!-- Navbar com efeito de vidro -->
+  <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
-      <a class="navbar-brand" routerLink="/dashboard">TripBoard</a>
+      <a class="navbar-brand" routerLink="/dashboard">
+        <i class="material-icons">travel_explore</i> TripBoard
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link" routerLink="/dashboard">Meus Roteiros</a>
+            <a class="nav-link" routerLink="/dashboard">
+              <i class="material-icons">dashboard</i> Dashboard
+            </a>
           </li>
         </ul>
-        <div class="d-flex align-items-center">
-          <button *ngIf="roteiro?.editavel" class="btn btn-outline-light me-2">
+        <div class="d-flex align-items-center gap-2">
+          <button *ngIf="roteiro?.editavel" class="btn btn-light btn-icon-text">
             <i class="material-icons">edit</i> Editar
           </button>
-          <button *ngIf="roteiro?.compartilhavel" class="btn btn-outline-light me-2" [routerLink]="['/roteiro', roteiro?.id, 'colaboradores']">
+          <button *ngIf="roteiro?.compartilhavel" class="btn btn-light btn-icon-text" [routerLink]="['/roteiro', roteiro?.id, 'colaboradores']">
             <i class="material-icons">group</i> Colaboradores
           </button>
-          <button *ngIf="roteiro?.compartilhavel" class="btn btn-outline-light me-2">
+          <button *ngIf="roteiro?.compartilhavel" class="btn btn-light btn-icon-text">
             <i class="material-icons">share</i> Compartilhar
           </button>
         </div>
@@ -28,154 +32,193 @@
   </nav>
 
   <!-- Conteúdo principal -->
-  <div class="container my-4">
-    <!-- Loader -->
+  <div class="container py-4">
+    <!-- Loading state -->
     <div *ngIf="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Carregando...</span>
       </div>
-      <p class="mt-2">Carregando informações do roteiro...</p>
+      <p class="mt-3 text-muted">Carregando informações do roteiro...</p>
     </div>
 
-    <!-- Erro -->
-    <div *ngIf="error" class="alert alert-danger">
-      {{ error }}
-      <div class="mt-3">
-        <a routerLink="/dashboard" class="btn btn-primary">Voltar para Dashboard</a>
+    <!-- Error state -->
+    <div *ngIf="error" class="alert alert-danger d-flex align-items-center">
+      <i class="material-icons me-2">error_outline</i>
+      <div>{{ error }}</div>
+      <div class="ms-auto">
+        <a routerLink="/dashboard" class="btn btn-outline-danger btn-sm">
+          <i class="material-icons">arrow_back</i> Voltar
+        </a>
       </div>
     </div>
 
     <!-- Cabeçalho do roteiro -->
     <div *ngIf="roteiro && !loading" class="roteiro-header mb-4">
-      <div class="row align-items-center">
-        <div class="col-md-8">
-          <h1 class="display-5 mb-0">{{ roteiro.nome }}</h1>
-          <p class="lead text-muted mb-2">{{ roteiro.destino }}</p>
-          <div class="d-flex align-items-center">
-            <span class="badge rounded-pill bg-primary me-2">
-              {{ formatarData(roteiro.dataInicio) }} - {{ formatarData(roteiro.dataFim) }}
-            </span>
-            <span class="badge rounded-pill bg-secondary me-2">{{ calcularDuracao() }} dias</span>
-            <span *ngIf="roteiro.privado" class="badge rounded-pill bg-warning text-dark">
-              <i class="material-icons align-middle" style="font-size: 14px;">lock</i> Privado
-            </span>
-          </div>
-        </div>
-        <div class="col-md-4 text-md-end mt-3 mt-md-0">
-          <a routerLink="/dashboard" class="btn btn-outline-secondary">
-            <i class="material-icons align-middle">arrow_back</i> Voltar
-          </a>
-        </div>
-      </div>
-      <hr class="my-4">
-      <p *ngIf="roteiro.descricao">{{ roteiro.descricao }}</p>
-    </div>
-
-    <!-- Conteúdo do roteiro -->
-    <div *ngIf="roteiro && !loading" class="row">
-      <!-- Calendário de dias -->
-      <div class="col-md-8">
-        <div class="card mb-4">
-          <div class="card-header bg-white d-flex justify-content-between align-items-center">
-            <h3 class="mb-0">Seu Roteiro</h3>
-            <div>
-              <button class="btn btn-sm btn-outline-primary">
-                <i class="material-icons align-middle">print</i> Imprimir
-              </button>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-              <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pills-calendar" type="button">
-                <i class="material-icons align-middle">calendar_today</i> Calendário
-              </button>
-              <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-list" type="button">
-                <i class="material-icons align-middle">format_list_bulleted</i> Lista
-              </button>
-            </div>
-            
-            <div class="tab-content">
-              <!-- Visualização do calendário -->
-              <div class="tab-pane fade show active" id="pills-calendar" role="tabpanel">
-                <div *ngFor="let dia of diasViagem; let i = index" class="calendar-day mb-3">
-                  <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                      <h5 class="mb-0">Dia {{ i + 1 }} - {{ formatarDiaSemana(dia) }}</h5>
-                      <small class="text-muted">{{ formatarData(dia) }}</small>
-                    </div>
-                    <button class="btn btn-sm btn-primary" (click)="prepararNovaAtividade(i)">
-                      <i class="material-icons align-middle">add</i> Atividade
-                    </button>
-                  </div>
-                  
-                  <div *ngIf="!getAtividadesDia(i).length" class="text-center py-4 bg-light rounded">
-                    <p class="text-muted mb-0">Nenhuma atividade planejada para este dia</p>
-                    <button class="btn btn-link" (click)="prepararNovaAtividade(i)">Adicionar atividade</button>
-                  </div>
-                  
-                  <div *ngFor="let atividade of getAtividadesDia(i)" class="activity-item mb-2">
-                    <div class="d-flex align-items-start">
-                      <div class="activity-time me-3">
-                        <span class="badge bg-light text-dark">{{ atividade.horario || 'Flexível' }}</span>
-                      </div>
-                      <div class="activity-content flex-grow-1">
-                        <h6 class="mb-1">{{ atividade.titulo }}</h6>
-                        <p *ngIf="atividade.descricao" class="mb-1 small">{{ atividade.descricao }}</p>
-                        <div *ngIf="atividade.local" class="small text-muted">
-                          <i class="material-icons align-middle" style="font-size: 14px;">location_on</i> 
-                          {{ atividade.local }}
-                        </div>
-                      </div>
-                      <div class="activity-actions">
-                        <button class="btn btn-sm btn-link text-primary" 
-                                title="Editar atividade" 
-                                (click)="editarAtividade(atividade)">
-                          <i class="material-icons">edit</i>
-                        </button>
-                        <button class="btn btn-sm btn-link text-danger" 
-                                title="Remover atividade" 
-                                (click)="removerAtividade(atividade)">
-                          <i class="material-icons">delete</i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+      <!-- Imagem de capa com overlay -->
+      <div class="cover-image-container mb-4">
+        <img [src]="roteiro.imagem || 'assets/images/placeholder-trip.jpg'" 
+             [alt]="roteiro.destino"
+             class="cover-image">
+        <div class="cover-overlay">
+          <div class="container">
+            <div class="row align-items-end">
+              <div class="col-lg-8">
+                <h1 class="display-4 text-white mb-2">{{ roteiro.nome }}</h1>
+                <p class="lead text-white mb-3">
+                  <i class="material-icons">place</i> {{ roteiro.destino }}
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge bg-light text-dark">
+                    <i class="material-icons">event</i>
+                    {{ formatarData(roteiro.dataInicio) }} - {{ formatarData(roteiro.dataFim) }}
+                  </span>
+                  <span class="badge bg-light text-dark">
+                    <i class="material-icons">schedule</i>
+                    {{ calcularDuracao() }} dias
+                  </span>
+                  <span class="badge" [ngClass]="{
+                    'bg-success': roteiro.status === 'confirmado',
+                    'bg-warning text-dark': roteiro.status === 'planejamento',
+                    'bg-info': roteiro.status === 'em_andamento',
+                    'bg-secondary': roteiro.status === 'concluido'
+                  }">
+                    {{ roteiro.status || 'Planejamento' }}
+                  </span>
+                  <span *ngIf="roteiro.privado" class="badge bg-light text-dark">
+                    <i class="material-icons">lock</i> Privado
+                  </span>
                 </div>
               </div>
+              <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                <div class="btn-group">
+                  <button class="btn btn-light btn-icon-text">
+                    <i class="material-icons">file_download</i> PDF
+                  </button>
+                  <button class="btn btn-light btn-icon-text">
+                    <i class="material-icons">print</i> Imprimir
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Descrição e detalhes -->
+      <div class="glass-container p-4 mb-4">
+        <div class="row">
+          <div class="col-md-8">
+            <h5 class="mb-3">Sobre a viagem</h5>
+            <p *ngIf="roteiro.descricao" class="text-muted mb-0">{{ roteiro.descricao }}</p>
+            <p *ngIf="!roteiro.descricao" class="text-muted mb-0">Nenhuma descrição disponível.</p>
+          </div>
+          <div class="col-md-4">
+            <div class="d-flex flex-column">
+              <div class="stat-item">
+                <span class="stat-label">Orçamento Total</span>
+                <span class="stat-value">{{ roteiro.orcamento_total | currency:'BRL' }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Colaboradores</span>
+                <span class="stat-value">{{ roteiro.colaboradores?.length || 0 }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Atividades</span>
+                <span class="stat-value">{{ roteiro.atividades?.length || 0 }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs de navegação -->
+      <ul class="nav nav-pills nav-fill mb-4">
+        <li class="nav-item">
+          <a class="nav-link active" href="#roteiro">
+            <i class="material-icons">map</i> Roteiro
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/roteiro', roteiro.id, 'gastos']">
+            <i class="material-icons">payments</i> Gastos
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/roteiro', roteiro.id, 'colaboradores']">
+            <i class="material-icons">group</i> Colaboradores
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#documentos">
+            <i class="material-icons">folder</i> Documentos
+          </a>
+        </li>
+      </ul>
+
+      <!-- Conteúdo do roteiro -->
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="roteiro">
+          <!-- Calendário de dias -->
+          <div class="card mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+              <h3 class="mb-0">Seu Roteiro</h3>
+              <div>
+                <button class="btn btn-sm btn-outline-primary">
+                  <i class="material-icons align-middle">print</i> Imprimir
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pills-calendar" type="button">
+                  <i class="material-icons align-middle">calendar_today</i> Calendário
+                </button>
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-list" type="button">
+                  <i class="material-icons align-middle">format_list_bulleted</i> Lista
+                </button>
+              </div>
               
-              <!-- Visualização em lista -->
-              <div class="tab-pane fade" id="pills-list" role="tabpanel">
-                <div class="list-group">
-                  <div *ngFor="let dia of diasViagem; let i = index" class="mb-3">
-                    <div class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
+              <div class="tab-content">
+                <!-- Visualização do calendário -->
+                <div class="tab-pane fade show active" id="pills-calendar" role="tabpanel">
+                  <div *ngFor="let dia of diasViagem; let i = index" class="calendar-day mb-3">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
                       <div>
-                        <strong>Dia {{ i + 1 }}</strong> - {{ formatarData(dia) }} ({{ formatarDiaSemana(dia) }})
+                        <h5 class="mb-0">Dia {{ i + 1 }} - {{ formatarDiaSemana(dia) }}</h5>
+                        <small class="text-muted">{{ formatarData(dia) }}</small>
                       </div>
                       <button class="btn btn-sm btn-primary" (click)="prepararNovaAtividade(i)">
-                        <i class="material-icons align-middle">add</i>
+                        <i class="material-icons align-middle">add</i> Atividade
                       </button>
                     </div>
-                    <div *ngIf="!getAtividadesDia(i).length" class="list-group-item text-center py-3">
+                    
+                    <div *ngIf="!getAtividadesDia(i).length" class="text-center py-4 bg-light rounded">
                       <p class="text-muted mb-0">Nenhuma atividade planejada para este dia</p>
+                      <button class="btn btn-link" (click)="prepararNovaAtividade(i)">Adicionar atividade</button>
                     </div>
-                    <div *ngFor="let atividade of getAtividadesDia(i)" class="list-group-item">
-                      <div class="d-flex justify-content-between">
-                        <div>
-                          <div class="d-flex align-items-center">
-                            <span class="badge bg-light text-dark me-2">{{ atividade.horario || 'Flexível' }}</span>
-                            <h6 class="mb-0">{{ atividade.titulo }}</h6>
-                          </div>
-                          <p *ngIf="atividade.descricao" class="mb-1 small mt-1">{{ atividade.descricao }}</p>
+                    
+                    <div *ngFor="let atividade of getAtividadesDia(i)" class="activity-item mb-2">
+                      <div class="d-flex align-items-start">
+                        <div class="activity-time me-3">
+                          <span class="badge bg-light text-dark">{{ atividade.horario || 'Flexível' }}</span>
+                        </div>
+                        <div class="activity-content flex-grow-1">
+                          <h6 class="mb-1">{{ atividade.titulo }}</h6>
+                          <p *ngIf="atividade.descricao" class="mb-1 small">{{ atividade.descricao }}</p>
                           <div *ngIf="atividade.local" class="small text-muted">
                             <i class="material-icons align-middle" style="font-size: 14px;">location_on</i> 
                             {{ atividade.local }}
                           </div>
                         </div>
-                        <div>
-                          <button class="btn btn-sm btn-link" (click)="editarAtividade(atividade)">
+                        <div class="activity-actions">
+                          <button class="btn btn-sm btn-link text-primary" 
+                                  title="Editar atividade" 
+                                  (click)="editarAtividade(atividade)">
                             <i class="material-icons">edit</i>
                           </button>
-                          <button class="btn btn-sm btn-link text-danger" (click)="removerAtividade(atividade)">
+                          <button class="btn btn-sm btn-link text-danger" 
+                                  title="Remover atividade" 
+                                  (click)="removerAtividade(atividade)">
                             <i class="material-icons">delete</i>
                           </button>
                         </div>
@@ -183,51 +226,50 @@
                     </div>
                   </div>
                 </div>
+                
+                <!-- Visualização em lista -->
+                <div class="tab-pane fade" id="pills-list" role="tabpanel">
+                  <div class="list-group">
+                    <div *ngFor="let dia of diasViagem; let i = index" class="mb-3">
+                      <div class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
+                        <div>
+                          <strong>Dia {{ i + 1 }}</strong> - {{ formatarData(dia) }} ({{ formatarDiaSemana(dia) }})
+                        </div>
+                        <button class="btn btn-sm btn-primary" (click)="prepararNovaAtividade(i)">
+                          <i class="material-icons align-middle">add</i>
+                        </button>
+                      </div>
+                      <div *ngIf="!getAtividadesDia(i).length" class="list-group-item text-center py-3">
+                        <p class="text-muted mb-0">Nenhuma atividade planejada para este dia</p>
+                      </div>
+                      <div *ngFor="let atividade of getAtividadesDia(i)" class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                          <div>
+                            <div class="d-flex align-items-center">
+                              <span class="badge bg-light text-dark me-2">{{ atividade.horario || 'Flexível' }}</span>
+                              <h6 class="mb-0">{{ atividade.titulo }}</h6>
+                            </div>
+                            <p *ngIf="atividade.descricao" class="mb-1 small mt-1">{{ atividade.descricao }}</p>
+                            <div *ngIf="atividade.local" class="small text-muted">
+                              <i class="material-icons align-middle" style="font-size: 14px;">location_on</i> 
+                              {{ atividade.local }}
+                            </div>
+                          </div>
+                          <div>
+                            <button class="btn btn-sm btn-link" (click)="editarAtividade(atividade)">
+                              <i class="material-icons">edit</i>
+                            </button>
+                            <button class="btn btn-sm btn-link text-danger" (click)="removerAtividade(atividade)">
+                              <i class="material-icons">delete</i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Sidebar -->
-      <div class="col-md-4">
-        <!-- Colaboradores -->
-        <div class="card mb-4">
-          <div class="card-header bg-white">
-            <h5 class="mb-0">Colaboradores</h5>
-          </div>
-          <div class="card-body">
-            <div class="d-flex align-items-center mb-3">
-              <img src="https://ui-avatars.com/api/?name={{ roteiro.criador?.nome }}&background=3f51b5&color=fff" 
-                   class="rounded-circle me-2" 
-                   width="36" 
-                   alt="Avatar">
-              <div>
-                <p class="mb-0">{{ roteiro.criador?.nome }} <span class="badge bg-primary ms-1">Criador</span></p>
-                <small class="text-muted">{{ roteiro.criador?.email }}</small>
-              </div>
-            </div>
-            
-            <div *ngIf="!roteiro.colaboradores?.length" class="text-center py-3">
-              <p class="text-muted mb-0">Nenhum colaborador adicionado</p>
-            </div>
-            
-            <button class="btn btn-outline-primary w-100">
-              <i class="material-icons align-middle">person_add</i> Convidar colaboradores
-            </button>
-          </div>
-        </div>
-        
-        <!-- Resumo de gastos -->
-        <div class="card mb-4">
-          <div class="card-header bg-white">
-            <h5 class="mb-0">Resumo de Gastos</h5>
-          </div>
-          <div class="card-body text-center">
-            <p class="text-muted">Você ainda não adicionou gastos ao roteiro</p>
-            <button class="btn btn-outline-primary" [routerLink]="['/roteiro', roteiro.id, 'gastos']">
-              <i class="material-icons align-middle">add</i> Gerenciar gastos
-            </button>
           </div>
         </div>
       </div>

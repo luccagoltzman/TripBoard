@@ -1,7 +1,7 @@
 export type TipoUsuario = 'admin' | 'colaborador';
 
 export interface Usuario {
-  id: number;
+  id: string;
   nome: string;
   email: string;
   tipo: TipoUsuario;

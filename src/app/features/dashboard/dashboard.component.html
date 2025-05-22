@@ -1,0 +1,144 @@
+<!-- Navbar com efeito glassmorphism -->
+<nav class="glass-card navbar fixed-top p-4">
+  <div class="container-fluid">
+    <div class="d-flex align-items-center gap-4">
+      <h1 class="h4 mb-0">TripBoard</h1>
+      <div class="nav-links">
+        <a class="nav-link active" href="#">Dashboard</a>
+        <a class="nav-link" href="#">Roteiros</a>
+        <a class="nav-link" href="#">Gastos</a>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-primary">
+        <i class="bi bi-plus-lg me-2"></i>Novo Roteiro
+      </button>
+      <div class="avatar">
+        <img src="assets/avatar.jpg" alt="Avatar" class="rounded-circle" width="40">
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Conteúdo principal -->
+<main class="container py-5 mt-5">
+  <!-- Estatísticas -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="card p-4">
+        <div class="d-flex align-items-center gap-3">
+          <div class="stats-icon bg-primary-light rounded-circle p-3">
+            <i class="bi bi-map text-primary fs-4"></i>
+          </div>
+          <div>
+            <h3 class="h2 mb-0">12</h3>
+            <p class="text-secondary mb-0">Roteiros Ativos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-4">
+        <div class="d-flex align-items-center gap-3">
+          <div class="stats-icon bg-success-light rounded-circle p-3">
+            <i class="bi bi-check-circle text-success fs-4"></i>
+          </div>
+          <div>
+            <h3 class="h2 mb-0">8</h3>
+            <p class="text-secondary mb-0">Roteiros Concluídos</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-4">
+        <div class="d-flex align-items-center gap-3">
+          <div class="stats-icon bg-warning-light rounded-circle p-3">
+            <i class="bi bi-clock text-warning fs-4"></i>
+          </div>
+          <div>
+            <h3 class="h2 mb-0">4</h3>
+            <p class="text-secondary mb-0">Roteiros Pendentes</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de Roteiros -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Seus Roteiros</h2>
+    <div class="d-flex gap-2">
+      <div class="input-group">
+        <span class="input-group-text border-0 bg-white">
+          <i class="bi bi-search"></i>
+        </span>
+        <input type="text" class="form-control border-0" placeholder="Buscar roteiros...">
+      </div>
+      <select class="form-select border-0">
+        <option>Todos os status</option>
+        <option>Ativo</option>
+        <option>Concluído</option>
+        <option>Pendente</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Card de Roteiro -->
+    <div class="col-md-6 col-lg-4" *ngFor="let roteiro of roteiros">
+      <div class="card h-100">
+        <div class="position-relative">
+          <img [src]="roteiro.imagemCapa" class="card-img-top" style="height: 200px; object-fit: cover;">
+          <div class="position-absolute top-0 end-0 p-3">
+            <span class="badge" [ngClass]="{
+              'badge-success': roteiro.status === 'Ativo',
+              'badge-warning': roteiro.status === 'Pendente',
+              'badge-secondary': roteiro.status === 'Concluído'
+            }">
+              {{roteiro.status}}
+            </span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title mb-3">{{roteiro.titulo}}</h5>
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="bi bi-calendar-event text-secondary"></i>
+            <span class="text-secondary">{{roteiro.dataInicio | date}} - {{roteiro.dataFim | date}}</span>
+          </div>
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="bi bi-geo-alt text-secondary"></i>
+            <span class="text-secondary">{{roteiro.destino}}</span>
+          </div>
+          <div class="progress mb-3" style="height: 8px;">
+            <div class="progress-bar" 
+                 [style.width.%]="roteiro.progresso"
+                 [ngClass]="{
+                   'bg-success': roteiro.progresso === 100,
+                   'bg-primary': roteiro.progresso < 100
+                 }">
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <div class="avatar-group">
+                <img *ngFor="let colaborador of roteiro.colaboradores.slice(0,3)"
+                     [src]="colaborador.avatar"
+                     class="rounded-circle border border-2 border-white"
+                     width="32"
+                     [alt]="colaborador.nome">
+                <span *ngIf="roteiro.colaboradores.length > 3"
+                      class="avatar-more">
+                  +{{roteiro.colaboradores.length - 3}}
+                </span>
+              </div>
+            </div>
+            <a [routerLink]="['/roteiro', roteiro.id]" class="btn btn-outline">
+              Ver Detalhes
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main> 

@@ -1,32 +1,39 @@
 import { Usuario } from './usuario.model';
-import { Atividade } from './atividade.model';
-import { Colaborador } from './colaborador.model';
+import { Colaborador as ColaboradorBase } from './colaborador.model';
+import { Atividade as AtividadeBase } from './atividade.model';
 
 export interface Roteiro {
-  id: number | string;
-  nome: string;
-  destino: string;
+  id: string;
+  titulo: string;
+  nome?: string;
+  descricao: string;
   dataInicio: Date;
   dataFim: Date;
-  descricao?: string;
-  imagem?: string;
-  criadorId: number | string;
-  criador?: Usuario;
-  colaboradores?: Colaborador[];
-  atividades?: Atividade[];
-  privado?: boolean;
+  destino: string;
+  status: 'ativo' | 'pendente' | 'concluido' | 'planejamento' | 'confirmado' | 'em_andamento';
+  progresso: number;
+  orcamento: number;
   orcamento_total?: number;
-  
-  // Propriedades para controle de UI
+  gastoTotal: number;
+  imagemCapa: string;
+  imagem?: string;
+  privado: boolean;
+  colaboradores: ColaboradorBase[];
+  proximasAtividades: AtividadeBase[];
+  documentos: Documento[];
+  diasRestantes: number;
   editavel?: boolean;
   compartilhavel?: boolean;
+  criadorId?: string;
+  criador?: Usuario;
+  atividades?: AtividadeBase[];
 }
 
 export interface DiaRoteiro {
   id: number;
   data: Date;
   roteiroId: number;
-  atividades: Atividade[];
+  atividades: AtividadeBase[];
   notasDia?: string;
 }
 
@@ -63,4 +70,13 @@ export interface Sugestao {
   status: 'pendente' | 'aprovada' | 'rejeitada';
   roteiroId: number;
   dataCriacao: Date;
+}
+
+export interface Documento {
+  id: string;
+  nome: string;
+  tipo: string;
+  tamanho: string;
+  url: string;
+  icone: string;
 } 

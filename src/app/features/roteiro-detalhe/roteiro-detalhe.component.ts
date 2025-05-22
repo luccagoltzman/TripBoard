@@ -18,6 +18,11 @@ interface RoteiroApi extends Roteiro {
   user_id?: number | string;
 }
 
+// Interface estendida para Atividade com campos adicionais necessários
+interface AtividadeExtendida extends Atividade {
+  concluida: boolean;
+}
+
 @Component({
   selector: 'app-roteiro-detalhe',
   standalone: true,
@@ -390,29 +395,14 @@ export class RoteiroDetalheComponent implements OnInit {
       });
   }
   
-  atualizarAtividadeLocalmente(atividade: any): void {
-    if (!this.roteiro) return;
+  atualizarAtividadeLocalmente(atividade: Atividade): void {
+    if (!this.roteiro?.atividades) return;
     
-    if (!this.roteiro.atividades) {
-      this.roteiro.atividades = [];
-    }
-    
-    // Adaptar os campos do backend para o formato do frontend
-    const atividadeAdaptada: Atividade = {
+    const atividadeAdaptada: AtividadeExtendida = {
       ...atividade,
-      // Extrair a data e o horário do campo data_hora_inicio
-      data: atividade.data_hora_inicio ? new Date(atividade.data_hora_inicio) : atividade.data,
-      horario: this.extrairHorario(atividade.data_hora_inicio) || atividade.horario
+      concluida: false // valor padrão para o campo concluida
     };
     
-    console.log('Atividade adaptada:', atividadeAdaptada);
-    
-    // Se estamos editando, remover a atividade antiga
-    if (this.atividadeEmEdicao) {
-      this.roteiro.atividades = this.roteiro.atividades.filter(a => a.id !== atividadeAdaptada.id);
-    }
-    
-    // Adicionar a nova atividade
     this.roteiro.atividades.push(atividadeAdaptada);
   }
   
@@ -490,25 +480,16 @@ export class RoteiroDetalheComponent implements OnInit {
   }
   
   // Converte as atividades do formato do backend para o formato do frontend
-  private processarAtividades(atividades: any[]): void {
-    if (!atividades || !Array.isArray(atividades)) return;
+  private processarAtividades(atividades: Atividade[]): void {
+    if (!Array.isArray(atividades)) return;
     
-    console.log('Processando atividades recebidas:', atividades);
+    const atividadesProcessadas: AtividadeExtendida[] = atividades.map(atividade => ({
+      ...atividade,
+      concluida: false // valor padrão para o campo concluida
+    }));
     
-    // Converter cada atividade para o formato esperado pelo frontend
-    this.roteiro!.atividades = atividades.map(atividade => {
-      return {
-        ...atividade,
-        // Converter data_hora_inicio para data e horario
-        data: atividade.data_hora_inicio ? new Date(atividade.data_hora_inicio) : 
-              (atividade.data ? new Date(atividade.data) : new Date()),
-        horario: this.extrairHorario(atividade.data_hora_inicio) || atividade.horario || '',
-        // Mapear outros campos se necessário
-        titulo: atividade.titulo || atividade.nome || 'Sem título',
-        roteiroId: atividade.roteiro_id || atividade.roteiroId || this.roteiro!.id
-      } as Atividade;
-    });
-    
-    console.log('Atividades processadas:', this.roteiro!.atividades);
+    if (this.roteiro) {
+      this.roteiro.atividades = atividadesProcessadas;
+    }
   }
 } 
