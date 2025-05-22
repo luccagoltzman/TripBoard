@@ -1,0 +1,209 @@
+<div class="container my-5 fade-in">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <!-- Header -->
+      <div class="d-flex align-items-center mb-4">
+        <button class="btn btn-link text-decoration-none p-0 me-3" (click)="voltar()">
+          <i class="material-icons">arrow_back</i>
+        </button>
+        <h1 class="mb-0 text-gradient">Editar Roteiro</h1>
+      </div>
+
+      <div class="card glass-container">
+        <div class="card-body p-4">
+          <!-- Loading State -->
+          <div class="text-center py-5" *ngIf="loading">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Carregando...</span>
+            </div>
+            <p class="mt-3 text-muted">Carregando informações do roteiro...</p>
+          </div>
+
+          <!-- Formulário -->
+          <form [formGroup]="roteiroForm" (ngSubmit)="salvar()" *ngIf="!loading">
+            <div class="row">
+              <!-- Coluna da Imagem -->
+              <div class="col-md-4 mb-4 mb-md-0">
+                <div class="image-preview-container text-center">
+                  <img 
+                    [src]="imagemPreview || roteiro?.imagemCapa || 'assets/images/placeholder-trip.jpg'" 
+                    alt="Imagem do Roteiro"
+                    class="img-fluid rounded-3 mb-3 preview-image"
+                  >
+                  <div class="mb-3">
+                    <label for="imagemCapa" class="form-label">Imagem de Capa</label>
+                    <input 
+                      type="file" 
+                      id="imagemCapa" 
+                      class="form-control" 
+                      (change)="onImagemSelecionada($event)"
+                      accept="image/*"
+                    >
+                    <div class="form-text">Formatos aceitos: JPG, PNG. Tamanho máximo: 2MB</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Coluna do Formulário -->
+              <div class="col-md-8">
+                <div class="row g-3">
+                  <div class="col-12">
+                    <label for="titulo" class="form-label">Título do Roteiro</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-transparent border-end-0">
+                        <i class="material-icons text-muted">title</i>
+                      </span>
+                      <input 
+                        type="text" 
+                        id="titulo" 
+                        formControlName="titulo" 
+                        class="form-control border-start-0" 
+                        [ngClass]="{'is-invalid': submitted && f['titulo'].errors}"
+                        placeholder="Digite o título do roteiro"
+                      >
+                    </div>
+                    <div class="invalid-feedback" *ngIf="submitted && f['titulo'].errors">
+                      <span *ngIf="f['titulo'].errors['required']">Título é obrigatório</span>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label for="destino" class="form-label">Destino</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-transparent border-end-0">
+                        <i class="material-icons text-muted">place</i>
+                      </span>
+                      <input 
+                        type="text" 
+                        id="destino" 
+                        formControlName="destino" 
+                        class="form-control border-start-0" 
+                        [ngClass]="{'is-invalid': submitted && f['destino'].errors}"
+                        placeholder="Para onde você vai?"
+                      >
+                    </div>
+                    <div class="invalid-feedback" *ngIf="submitted && f['destino'].errors">
+                      <span *ngIf="f['destino'].errors['required']">Destino é obrigatório</span>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="dataInicio" class="form-label">Data de Início</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-transparent border-end-0">
+                        <i class="material-icons text-muted">event</i>
+                      </span>
+                      <input 
+                        type="date" 
+                        id="dataInicio" 
+                        formControlName="dataInicio" 
+                        class="form-control border-start-0" 
+                        [ngClass]="{'is-invalid': submitted && (f['dataInicio'].errors || roteiroForm.hasError('dataInvalida'))}"
+                      >
+                    </div>
+                    <div class="invalid-feedback" *ngIf="submitted && (f['dataInicio'].errors || roteiroForm.hasError('dataInvalida'))">
+                      <span *ngIf="f['dataInicio'].errors?.['required']">Data de início é obrigatória</span>
+                      <span *ngIf="roteiroForm.hasError('dataInvalida')">Data de início deve ser anterior à data de fim</span>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="dataFim" class="form-label">Data de Fim</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-transparent border-end-0">
+                        <i class="material-icons text-muted">event</i>
+                      </span>
+                      <input 
+                        type="date" 
+                        id="dataFim" 
+                        formControlName="dataFim" 
+                        class="form-control border-start-0" 
+                        [ngClass]="{'is-invalid': submitted && (f['dataFim'].errors || roteiroForm.hasError('dataInvalida'))}"
+                      >
+                    </div>
+                    <div class="invalid-feedback" *ngIf="submitted && (f['dataFim'].errors || roteiroForm.hasError('dataInvalida'))">
+                      <span *ngIf="f['dataFim'].errors?.['required']">Data de fim é obrigatória</span>
+                      <span *ngIf="roteiroForm.hasError('dataInvalida')">Data de fim deve ser posterior à data de início</span>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="orcamento" class="form-label">Orçamento Total</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-transparent border-end-0">
+                        <i class="material-icons text-muted">attach_money</i>
+                      </span>
+                      <input 
+                        type="number" 
+                        id="orcamento" 
+                        formControlName="orcamento_total" 
+                        class="form-control border-start-0" 
+                        [ngClass]="{'is-invalid': submitted && f['orcamento_total'].errors}"
+                        min="0"
+                        step="0.01"
+                      >
+                    </div>
+                    <div class="invalid-feedback" *ngIf="submitted && f['orcamento_total'].errors">
+                      <span *ngIf="f['orcamento_total'].errors['required']">Orçamento é obrigatório</span>
+                      <span *ngIf="f['orcamento_total'].errors['min']">Orçamento deve ser maior ou igual a zero</span>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label d-block">Privacidade</label>
+                    <div class="form-check form-switch">
+                      <input 
+                        type="checkbox" 
+                        id="privado" 
+                        formControlName="privado" 
+                        class="form-check-input"
+                        role="switch"
+                      >
+                      <label class="form-check-label" for="privado">
+                        Roteiro Privado
+                      </label>
+                    </div>
+                    <small class="text-muted">
+                      Roteiros privados só são visíveis para colaboradores
+                    </small>
+                  </div>
+
+                  <div class="col-12">
+                    <label for="descricao" class="form-label">Descrição</label>
+                    <textarea 
+                      id="descricao" 
+                      formControlName="descricao" 
+                      class="form-control" 
+                      rows="4"
+                      placeholder="Descreva seu roteiro..."
+                    ></textarea>
+                  </div>
+                </div>
+
+                <!-- Botões -->
+                <div class="d-flex gap-2 justify-content-end mt-4">
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-secondary" 
+                    (click)="voltar()"
+                  >
+                    Cancelar
+                  </button>
+                  <button 
+                    type="submit" 
+                    class="btn btn-primary" 
+                    [disabled]="salvando"
+                  >
+                    <span *ngIf="salvando" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    <i class="material-icons me-2" *ngIf="!salvando">save</i>
+                    Salvar Alterações
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

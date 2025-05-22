@@ -1,31 +1,65 @@
-<div class="container my-5">
+<div class="container my-5 fade-in">
   <div class="row">
     <div class="col-lg-10 mx-auto">
+      <!-- Header -->
       <div class="d-flex align-items-center mb-4">
         <button class="btn btn-link text-decoration-none p-0 me-3" (click)="voltar()">
-          <i class="material-icons align-middle">arrow_back</i>
+          <i class="material-icons">arrow_back</i>
         </button>
-        <h1 class="mb-0">Meu Perfil</h1>
+        <h1 class="mb-0 text-gradient">Meu Perfil</h1>
       </div>
 
-      <div class="row">
+      <div class="row g-4">
+        <!-- Preview da Foto e Resumo do Usuário -->
+        <div class="col-md-4">
+          <div class="card profile-card text-center mb-4">
+            <div class="card-body p-4">
+              <div class="avatar-container mb-4">
+                <img 
+                  [src]="imagemPreview || usuario?.fotoPerfil || 'https://ui-avatars.com/api/?name=' + usuario?.nome + '&background=6366f1&color=fff&size=200'" 
+                  alt="Foto de Perfil" 
+                  class="rounded-circle img-fluid profile-image"
+                >
+              </div>
+              <h4 class="mb-2">{{ usuario?.nome }}</h4>
+              <p class="text-muted mb-2">{{ usuario?.email }}</p>
+              <p class="text-muted mb-4">
+                <small>Membro desde {{ usuario?.dataCriacao | date:'dd/MM/yyyy' }}</small>
+              </p>
+              
+              <div class="border-top pt-4">
+                <button class="btn btn-outline-danger w-100" type="button" (click)="sair()">
+                  <i class="material-icons me-2">logout</i>
+                  Sair da Conta
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <!-- Informações do Perfil -->
         <div class="col-md-8">
-          <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white py-3">
-              <h5 class="mb-0">Informações Pessoais</h5>
+          <div class="card glass-container mb-4">
+            <div class="card-header">
+              <h5>Informações Pessoais</h5>
             </div>
             <div class="card-body p-4">
               <form [formGroup]="perfilForm" (ngSubmit)="salvarPerfil()">
                 <div class="mb-3">
                   <label for="nome" class="form-label">Nome Completo</label>
-                  <input 
-                    type="text" 
-                    id="nome" 
-                    formControlName="nome" 
-                    class="form-control" 
-                    [ngClass]="{'is-invalid': submittedPerfil && pf['nome'].errors}"
-                  >
+                  <div class="input-group">
+                    <span class="input-group-text bg-transparent border-end-0">
+                      <i class="material-icons text-muted">person</i>
+                    </span>
+                    <input 
+                      type="text" 
+                      id="nome" 
+                      formControlName="nome" 
+                      class="form-control border-start-0" 
+                      [ngClass]="{'is-invalid': submittedPerfil && pf['nome'].errors}"
+                      placeholder="Seu nome completo"
+                    >
+                  </div>
                   <div class="invalid-feedback" *ngIf="submittedPerfil && pf['nome'].errors">
                     <span *ngIf="pf['nome'].errors['required']">Nome é obrigatório</span>
                   </div>
@@ -33,13 +67,19 @@
                 
                 <div class="mb-3">
                   <label for="email" class="form-label">Email</label>
-                  <input 
-                    type="email" 
-                    id="email" 
-                    formControlName="email" 
-                    class="form-control" 
-                    [ngClass]="{'is-invalid': submittedPerfil && pf['email'].errors}"
-                  >
+                  <div class="input-group">
+                    <span class="input-group-text bg-transparent border-end-0">
+                      <i class="material-icons text-muted">email</i>
+                    </span>
+                    <input 
+                      type="email" 
+                      id="email" 
+                      formControlName="email" 
+                      class="form-control border-start-0" 
+                      [ngClass]="{'is-invalid': submittedPerfil && pf['email'].errors}"
+                      placeholder="seu.email@exemplo.com"
+                    >
+                  </div>
                   <div class="invalid-feedback" *ngIf="submittedPerfil && pf['email'].errors">
                     <span *ngIf="pf['email'].errors['required']">Email é obrigatório</span>
                     <span *ngIf="pf['email'].errors['email']">Email inválido</span>
@@ -48,23 +88,29 @@
                 
                 <div class="mb-4">
                   <label for="fotoPerfil" class="form-label">Foto de Perfil</label>
-                  <input 
-                    type="file" 
-                    id="fotoPerfil" 
-                    class="form-control" 
-                    (change)="onImagemSelecionada($event)"
-                    accept="image/*"
-                  >
+                  <div class="input-group">
+                    <span class="input-group-text bg-transparent border-end-0">
+                      <i class="material-icons text-muted">photo_camera</i>
+                    </span>
+                    <input 
+                      type="file" 
+                      id="fotoPerfil" 
+                      class="form-control border-start-0" 
+                      (change)="onImagemSelecionada($event)"
+                      accept="image/*"
+                    >
+                  </div>
                   <div class="form-text">Formatos aceitos: JPG, PNG. Tamanho máximo: 2MB</div>
                 </div>
                 
-                <div class="d-grid gap-2">
+                <div class="d-grid">
                   <button 
                     type="submit" 
                     class="btn btn-primary" 
                     [disabled]="salvandoPerfil"
                   >
                     <span *ngIf="salvandoPerfil" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    <i class="material-icons me-2" *ngIf="!salvandoPerfil">save</i>
                     Salvar Alterações
                   </button>
                 </div>
@@ -73,21 +119,27 @@
           </div>
           
           <!-- Seção de Alteração de Senha -->
-          <div class="card shadow-sm">
-            <div class="card-header bg-white py-3">
-              <h5 class="mb-0">Alterar Senha</h5>
+          <div class="card glass-container">
+            <div class="card-header">
+              <h5>Alterar Senha</h5>
             </div>
             <div class="card-body p-4">
               <form [formGroup]="senhaForm" (ngSubmit)="alterarSenha()">
                 <div class="mb-3">
                   <label for="senhaAtual" class="form-label">Senha Atual</label>
-                  <input 
-                    type="password" 
-                    id="senhaAtual" 
-                    formControlName="senhaAtual" 
-                    class="form-control" 
-                    [ngClass]="{'is-invalid': submittedSenha && sf['senhaAtual'].errors}"
-                  >
+                  <div class="input-group">
+                    <span class="input-group-text bg-transparent border-end-0">
+                      <i class="material-icons text-muted">lock</i>
+                    </span>
+                    <input 
+                      type="password" 
+                      id="senhaAtual" 
+                      formControlName="senhaAtual" 
+                      class="form-control border-start-0" 
+                      [ngClass]="{'is-invalid': submittedSenha && sf['senhaAtual'].errors}"
+                      placeholder="Digite sua senha atual"
+                    >
+                  </div>
                   <div class="invalid-feedback" *ngIf="submittedSenha && sf['senhaAtual'].errors">
                     <span *ngIf="sf['senhaAtual'].errors['required']">Senha atual é obrigatória</span>
                   </div>
@@ -95,13 +147,19 @@
                 
                 <div class="mb-3">
                   <label for="novaSenha" class="form-label">Nova Senha</label>
-                  <input 
-                    type="password" 
-                    id="novaSenha" 
-                    formControlName="novaSenha" 
-                    class="form-control" 
-                    [ngClass]="{'is-invalid': submittedSenha && sf['novaSenha'].errors}"
-                  >
+                  <div class="input-group">
+                    <span class="input-group-text bg-transparent border-end-0">
+                      <i class="material-icons text-muted">vpn_key</i>
+                    </span>
+                    <input 
+                      type="password" 
+                      id="novaSenha" 
+                      formControlName="novaSenha" 
+                      class="form-control border-start-0" 
+                      [ngClass]="{'is-invalid': submittedSenha && sf['novaSenha'].errors}"
+                      placeholder="Digite sua nova senha"
+                    >
+                  </div>
                   <div class="invalid-feedback" *ngIf="submittedSenha && sf['novaSenha'].errors">
                     <span *ngIf="sf['novaSenha'].errors['required']">Nova senha é obrigatória</span>
                     <span *ngIf="sf['novaSenha'].errors['minlength']">A senha deve ter pelo menos 6 caracteres</span>
@@ -110,59 +168,37 @@
                 
                 <div class="mb-4">
                   <label for="confirmarSenha" class="form-label">Confirmar Senha</label>
-                  <input 
-                    type="password" 
-                    id="confirmarSenha" 
-                    formControlName="confirmarSenha" 
-                    class="form-control" 
-                    [ngClass]="{'is-invalid': submittedSenha && (sf['confirmarSenha'].errors || senhaForm.hasError('senhasNaoCoincidem'))}"
-                  >
+                  <div class="input-group">
+                    <span class="input-group-text bg-transparent border-end-0">
+                      <i class="material-icons text-muted">check_circle</i>
+                    </span>
+                    <input 
+                      type="password" 
+                      id="confirmarSenha" 
+                      formControlName="confirmarSenha" 
+                      class="form-control border-start-0" 
+                      [ngClass]="{'is-invalid': submittedSenha && (sf['confirmarSenha'].errors || senhaForm.hasError('senhasNaoCoincidem'))}"
+                      placeholder="Confirme sua nova senha"
+                    >
+                  </div>
                   <div class="invalid-feedback" *ngIf="submittedSenha && (sf['confirmarSenha'].errors || senhaForm.hasError('senhasNaoCoincidem'))">
                     <span *ngIf="sf['confirmarSenha'].errors?.['required']">Confirmação de senha é obrigatória</span>
                     <span *ngIf="senhaForm.hasError('senhasNaoCoincidem')">As senhas não coincidem</span>
                   </div>
                 </div>
                 
-                <div class="d-grid gap-2">
+                <div class="d-grid">
                   <button 
                     type="submit" 
                     class="btn btn-primary" 
                     [disabled]="salvandoSenha"
                   >
                     <span *ngIf="salvandoSenha" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    <i class="material-icons me-2" *ngIf="!salvandoSenha">lock_reset</i>
                     Alterar Senha
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Preview da Foto e Resumo do Usuário -->
-        <div class="col-md-4">
-          <div class="card shadow-sm text-center mb-4">
-            <div class="card-body p-4">
-              <div class="avatar-container mb-3">
-                <img 
-                  [src]="imagemPreview || usuario?.fotoPerfil || 'https://ui-avatars.com/api/?name=' + usuario?.nome + '&background=3f51b5&color=fff&size=200'" 
-                  alt="Foto de Perfil" 
-                  class="rounded-circle img-fluid profile-image"
-                >
-              </div>
-              <h5>{{ usuario?.nome }}</h5>
-              <p class="text-muted mb-2">{{ usuario?.email }}</p>
-              <p class="text-muted">
-                <small>Membro desde {{ usuario?.dataCriacao | date:'dd/MM/yyyy' }}</small>
-              </p>
-              
-              <div class="border-top pt-3 mt-3">
-                <div class="d-grid">
-                  <button class="btn btn-outline-danger" type="button" (click)="sair()">
-                    <i class="material-icons align-middle me-1" style="font-size: 18px;">logout</i>
-                    Sair da Conta
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
         </div>

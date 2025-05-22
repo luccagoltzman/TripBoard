@@ -26,6 +26,11 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'roteiro/:id/editar',
+    loadComponent: () => import('./features/roteiro/editar-roteiro/editar-roteiro.component').then(m => m.EditarRoteiroComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: 'roteiro/:id/colaboradores',
     loadComponent: () => import('./features/colaboradores/gerenciar/gerenciar-colaboradores.component').then(m => m.GerenciarColaboradoresComponent),
     canActivate: [authGuard]

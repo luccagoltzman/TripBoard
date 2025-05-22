@@ -1,0 +1,78 @@
+<div class="compartilhar-dialog">
+  <div class="dialog-header">
+    <h2>Compartilhar "{{ data.roteiroTitulo }}"</h2>
+    <button mat-icon-button (click)="fechar()" matTooltip="Fechar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content>
+    <div class="link-section">
+      <mat-form-field appearance="outline" class="link-field">
+        <mat-label>Link do roteiro</mat-label>
+        <input matInput [value]="linkCompartilhamento" readonly #linkInput>
+        <button mat-icon-button matSuffix (click)="copiarLink()" matTooltip="Copiar link">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <div class="social-section">
+      <h3>Compartilhar nas redes sociais</h3>
+      <div class="social-buttons">
+        <button *ngFor="let rede of redesSociais"
+                mat-mini-fab
+                [matTooltip]="'Compartilhar no ' + rede.nome"
+                (click)="compartilharRedeSocial(rede.id)"
+                class="social-button">
+          <mat-icon [svgIcon]="rede.icone"></mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="divider">
+      <span>ou convide por e-mail</span>
+    </div>
+
+    <form [formGroup]="compartilharForm" (ngSubmit)="compartilhar()" class="email-form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>E-mail do convidado</mat-label>
+        <input matInput 
+               formControlName="email" 
+               type="email" 
+               placeholder="exemplo@email.com">
+        <mat-icon matPrefix>email</mat-icon>
+        <mat-error *ngIf="f['email'].errors?.['required']">
+          E-mail é obrigatório
+        </mat-error>
+        <mat-error *ngIf="f['email'].errors?.['email']">
+          E-mail inválido
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nível de permissão</mat-label>
+        <mat-select formControlName="permissao">
+          <mat-option *ngFor="let p of permissoes" [value]="p.valor">
+            {{p.label}}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>lock</mat-icon>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="fechar()">
+      <mat-icon>close</mat-icon>
+      Cancelar
+    </button>
+    <button mat-flat-button
+            color="primary"
+            (click)="compartilhar()"
+            [disabled]="compartilharForm.invalid || enviando">
+      <mat-icon>send</mat-icon>
+      {{ enviando ? 'Enviando...' : 'Enviar convite' }}
+    </button>
+  </mat-dialog-actions>
+</div> 

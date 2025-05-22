@@ -10,6 +10,8 @@ import { finalize } from 'rxjs';
 import { NotificacaoService } from '@core/services/notificacao.service';
 import { Atividade } from '@core/models/atividade.model';
 import { ApiResponse } from '@core/models/api-response.model';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { CompartilharRoteiroComponent } from '../roteiro/compartilhar/compartilhar-roteiro.component';
 
 // Interface para reconhecer temporariamente os formatos do Laravel
 interface RoteiroApi extends Roteiro {
@@ -26,7 +28,12 @@ interface AtividadeExtendida extends Atividade {
 @Component({
   selector: 'app-roteiro-detalhe',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    ReactiveFormsModule,
+    MatDialogModule
+  ],
   templateUrl: './roteiro-detalhe.component.html',
   styleUrls: ['./roteiro-detalhe.component.scss']
 })
@@ -49,7 +56,8 @@ export class RoteiroDetalheComponent implements OnInit {
     private roteiroService: RoteiroService,
     private notificacaoService: NotificacaoService,
     private authService: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {
     this.atividadeForm = this.fb.group({
       id: [null],
@@ -491,5 +499,17 @@ export class RoteiroDetalheComponent implements OnInit {
     if (this.roteiro) {
       this.roteiro.atividades = atividadesProcessadas;
     }
+  }
+
+  abrirModalCompartilhar(): void {
+    if (!this.roteiro) return;
+
+    this.dialog.open(CompartilharRoteiroComponent, {
+      data: {
+        roteiroId: this.roteiro.id,
+        roteiroTitulo: this.roteiro.titulo || this.roteiro.nome
+      },
+      width: '500px'
+    });
   }
 } 

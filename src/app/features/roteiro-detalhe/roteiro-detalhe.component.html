@@ -17,13 +17,13 @@
           </li>
         </ul>
         <div class="d-flex align-items-center gap-2">
-          <button *ngIf="roteiro?.editavel" class="btn btn-light btn-icon-text">
+          <button *ngIf="roteiro?.editavel" class="btn btn-light btn-icon-text" [routerLink]="['/roteiro', roteiro?.id, 'editar']">
             <i class="material-icons">edit</i> Editar
           </button>
           <button *ngIf="roteiro?.compartilhavel" class="btn btn-light btn-icon-text" [routerLink]="['/roteiro', roteiro?.id, 'colaboradores']">
             <i class="material-icons">group</i> Colaboradores
           </button>
-          <button *ngIf="roteiro?.compartilhavel" class="btn btn-light btn-icon-text">
+          <button *ngIf="roteiro?.compartilhavel" class="btn btn-light btn-icon-text" (click)="abrirModalCompartilhar()">
             <i class="material-icons">share</i> Compartilhar
           </button>
         </div>

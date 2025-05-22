@@ -421,4 +421,36 @@ a {
   background: var(--gradient-surface);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Estilos globais para o modal de compartilhamento */
+.compartilhar-dialog-container {
+  .mat-mdc-dialog-container {
+    position: relative !important;
+  }
+
+  .mdc-dialog__surface {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  .mdc-dialog__content {
+    max-height: calc(90vh - 150px) !important;
+  }
+}
+
+/* Estilo para o Snackbar de sucesso */
+.snackbar-success {
+  background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+  color: white !important;
+  
+  .mdc-snackbar__label {
+    color: white !important;
+  }
+
+  .mat-mdc-button {
+    color: white !important;
+  }
 } 
