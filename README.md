@@ -157,6 +157,6 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 📧 Contato
 
-Lucca Goltzman - [@luccagoltzman](https://instagram.com/luccagoltzman) - luccagoltzman@gmail.com
+Lucca Goltzman - [@lucca_goltzman](https://instagram.com/lucca_goltzman) - luccagoltzman@gmail.com
 
 Link do Projeto: [https://github.com/luccagoltzman/tripboard](https://github.com/luccagoltzman/tripboard)
