@@ -1,14 +1,7 @@
-import { Component, Inject, ViewEncapsulation } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { RoteiroService } from '@core/services/roteiro.service';
 import { NotificacaoService } from '@core/services/notificacao.service';
 import { finalize } from 'rxjs';
@@ -23,19 +16,10 @@ interface CompartilharDialogData {
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatIconModule,
-    MatTooltipModule,
-    MatSnackBarModule
+    ReactiveFormsModule
   ],
   templateUrl: './compartilhar-roteiro.component.html',
-  styleUrls: ['./compartilhar-roteiro.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./compartilhar-roteiro.component.scss']
 })
 export class CompartilharRoteiroComponent {
   compartilharForm: FormGroup;
@@ -46,7 +30,7 @@ export class CompartilharRoteiroComponent {
     { id: 'whatsapp', nome: 'WhatsApp', icone: 'whatsapp' },
     { id: 'telegram', nome: 'Telegram', icone: 'telegram' },
     { id: 'facebook', nome: 'Facebook', icone: 'facebook' },
-    { id: 'twitter', nome: 'Twitter', icone: 'twitter' }
+    { id: 'twitter', nome: 'Twitter', icone: 'share' }
   ];
 
   permissoes = [
@@ -60,17 +44,45 @@ export class CompartilharRoteiroComponent {
     private dialogRef: MatDialogRef<CompartilharRoteiroComponent>,
     private roteiroService: RoteiroService,
     private notificacaoService: NotificacaoService,
-    private snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: CompartilharDialogData
   ) {
-    this.dialogRef.addPanelClass('compartilhar-dialog-container');
-    
     this.compartilharForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       permissao: ['visualizar', [Validators.required]]
     });
 
     this.linkCompartilhamento = `${window.location.origin}/roteiro/${this.data.roteiroId}`;
+  }
+
+  copiarLink(): void {
+    navigator.clipboard.writeText(this.linkCompartilhamento).then(() => {
+      this.notificacaoService.exibirSucesso('Link copiado!');
+    });
+  }
+
+  compartilharRedeSocial(redeSocial: string): void {
+    const titulo = encodeURIComponent(this.data.roteiroTitulo);
+    const url = encodeURIComponent(this.linkCompartilhamento);
+    let link = '';
+
+    switch (redeSocial) {
+      case 'whatsapp':
+        link = `https://api.whatsapp.com/send?text=${titulo}%20-%20${url}`;
+        break;
+      case 'telegram':
+        link = `https://t.me/share/url?url=${url}&text=${titulo}`;
+        break;
+      case 'facebook':
+        link = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+        break;
+      case 'twitter':
+        link = `https://twitter.com/intent/tweet?text=${titulo}&url=${url}`;
+        break;
+    }
+
+    if (link) {
+      window.open(link, '_blank');
+    }
   }
 
   compartilhar(): void {
@@ -99,42 +111,6 @@ export class CompartilharRoteiroComponent {
           );
         }
       });
-  }
-
-  compartilharRedeSocial(redeSocial: string): void {
-    const titulo = encodeURIComponent(this.data.roteiroTitulo);
-    const url = encodeURIComponent(this.linkCompartilhamento);
-    let link = '';
-
-    switch (redeSocial) {
-      case 'whatsapp':
-        link = `https://api.whatsapp.com/send?text=${titulo}%20-%20${url}`;
-        break;
-      case 'telegram':
-        link = `https://t.me/share/url?url=${url}&text=${titulo}`;
-        break;
-      case 'facebook':
-        link = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-        break;
-      case 'twitter':
-        link = `https://twitter.com/intent/tweet?text=${titulo}&url=${url}`;
-        break;
-    }
-
-    if (link) {
-      window.open(link, '_blank');
-    }
-  }
-
-  copiarLink(): void {
-    navigator.clipboard.writeText(this.linkCompartilhamento).then(() => {
-      this.snackBar.open('Link copiado!', 'Fechar', {
-        duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'bottom',
-        panelClass: ['snackbar-success']
-      });
-    });
   }
 
   fechar(): void {

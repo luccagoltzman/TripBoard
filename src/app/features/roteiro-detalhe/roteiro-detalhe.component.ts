@@ -509,7 +509,9 @@ export class RoteiroDetalheComponent implements OnInit {
         roteiroId: this.roteiro.id,
         roteiroTitulo: this.roteiro.titulo || this.roteiro.nome
       },
-      width: '500px'
+      width: '500px',
+      height: '600px',
+      panelClass: 'compartilhar-dialog-container'
     });
   }
 } 
