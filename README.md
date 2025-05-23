@@ -1,60 +1,162 @@
-# TripBoard
+# 🌎 TripBoard
 
-TripBoard é uma plataforma colaborativa para organização de roteiros de viagem em grupo. Permite que um grupo de viajantes (família ou amigos) possa visualizar, sugerir e editar juntos o roteiro de uma viagem em tempo real, com controle de permissões e histórico de alterações.
+<div align="center">
+  <img src="src/assets/images/logo.png" alt="TripBoard Logo" width="200"/>
+  
+  <p align="center">
+    Planeje e organize suas viagens de forma intuitiva e colaborativa
+  </p>
 
-## Funcionalidades Principais
+  <p>
+    <a href="#-sobre">Sobre</a> •
+    <a href="#-features">Features</a> •
+    <a href="#-tecnologias">Tecnologias</a> •
+    <a href="#-instalação">Instalação</a> •
+    <a href="#-uso">Uso</a> •
+    <a href="#-estrutura">Estrutura</a>
+  </p>
+</div>
 
-- **Autenticação de Usuário**: Registro, login e recuperação de senha
-- **Painel de Roteiros**: Visualização e gerenciamento dos roteiros criados
-- **Edição Colaborativa**: Sistema de sugestões e aprovações para roteiros
-- **Gerenciamento de Gastos**: Controle e visualização de gastos da viagem
-- **Comentários e Discussão**: Sistema de comentários para cada atividade do roteiro
-- **Compartilhamento**: Link público para compartilhar o roteiro
+## 📖 Sobre
 
-## Tecnologias Utilizadas
+O TripBoard é uma aplicação web moderna para planejamento de viagens, permitindo que você organize roteiros de forma colaborativa. Com uma interface intuitiva e recursos poderosos, você pode criar, compartilhar e gerenciar seus roteiros de viagem com facilidade.
 
-- **Frontend**: Angular 17+
-- **Estilização**: Bootstrap
-- **Backend**: Laravel 10+ (API RESTful) - em desenvolvimento
-- **Banco de Dados**: MySQL / PostgreSQL - em desenvolvimento
+### ✨ Destaques
 
-## Requisitos para Instalação
+- 🎨 Interface moderna e responsiva
+- 👥 Colaboração em tempo real
+- 📱 Design mobile-first
+- 🔒 Sistema de permissões granular
+- 📊 Gestão de gastos integrada
+- 📍 Organização por dias e atividades
 
-- Node.js 16.x ou superior
-- npm 8.x ou superior
+## 🚀 Features
 
-## Como Instalar
+### Roteiros
+- Criação e edição de roteiros
+- Organização por dias
+- Adição de atividades com horários
+- Upload de imagens e documentos
+- Compartilhamento com outros usuários
 
-1. Clone o repositório:
-   ```
-   git clone https://github.com/seu-usuario/tripboard.git
-   cd tripboard
-   ```
+### Colaboração
+- Sistema de convites por e-mail
+- Diferentes níveis de permissão
+- Comentários e sugestões
+- Compartilhamento via redes sociais
 
-2. Instale as dependências:
-   ```
-   npm install
-   ```
+### Gestão de Gastos
+- Controle de orçamento
+- Categorização de despesas
+- Divisão de gastos
+- Relatórios e gráficos
 
-3. Execute o servidor de desenvolvimento:
-   ```
-   npm start
-   ```
+## 🛠 Tecnologias
 
-4. Acesse a aplicação em `http://localhost:4200`
+- **Frontend:**
+  - Angular 17
+  - Bootstrap 5
+  - SCSS
+  - Material Icons
+  - RxJS
 
-## Estrutura do Projeto
+- **Backend:**
+  - Laravel 10
+  - MySQL
+  - Redis
+  - JWT Authentication
 
-O projeto está organizado seguindo a arquitetura de componentes do Angular:
+## 💻 Instalação
 
-- `/src/app/core`: Serviços, modelos e interceptors essenciais
-- `/src/app/shared`: Componentes, diretivas e pipes reutilizáveis
-- `/src/app/features`: Componentes específicos de funcionalidades
+### Pré-requisitos
 
-## Créditos
+- Node.js 18+
+- npm ou yarn
+- Angular CLI 17+
+- Composer
+- PHP 8.1+
+- MySQL 8.0+
 
-Desenvolvido como projeto de demonstração para um sistema colaborativo de organização de viagens.
+### Frontend
 
-## Licença
+```bash
+# Clone o repositório
+git clone https://github.com/luccagoltzman/tripboard.git
 
-Este projeto está licenciado sob a [MIT License](LICENSE).
+# Entre no diretório
+cd tripboard
+
+# Instale as dependências
+npm install
+
+# Inicie o servidor de desenvolvimento
+ng serve
+
+```
+
+## 🎮 Uso
+
+1. Acesse `http://localhost:4200` no navegador
+2. Faça login ou crie uma nova conta
+3. Comece a criar seus roteiros!
+
+### Criando um Roteiro
+
+1. Clique em "Novo Roteiro" no dashboard
+2. Preencha as informações básicas:
+   - Nome do roteiro
+   - Destino
+   - Datas
+   - Imagem de capa (opcional)
+3. Adicione atividades por dia
+4. Convide colaboradores (opcional)
+
+### Compartilhando
+
+1. Abra o roteiro desejado
+2. Clique no botão "Compartilhar"
+3. Escolha o método:
+   - Link direto
+   - Convite por e-mail
+   - Redes sociais
+
+## 📁 Estrutura
+
+```
+src/
+├── app/
+│   ├── core/           # Serviços, modelos e guards
+│   ├── features/       # Módulos principais
+│   ├── shared/        # Componentes compartilhados
+│   └── utils/         # Utilitários e helpers
+├── assets/
+│   ├── images/        # Imagens e ícones
+│   └── styles/        # Estilos globais
+└── environments/      # Configurações por ambiente
+```
+
+### Principais Módulos
+
+- `DashboardModule`: Visualização e gestão de roteiros
+- `RoteiroModule`: Criação e edição de roteiros
+- `ColaboradoresModule`: Gestão de colaboradores
+- `GastosModule`: Controle financeiro
+- `PerfilModule`: Configurações do usuário
+
+## 🤝 Contribuindo
+
+1. Fork o projeto
+2. Crie sua branch de feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## 📧 Contato
+
+Lucca Goltzman - [@luccagoltzman](https://instagram.com/luccagoltzman) - email@exemplo.com
+
+Link do Projeto: [https://github.com/luccagoltzman/tripboard](https://github.com/luccagoltzman/tripboard)
